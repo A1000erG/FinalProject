@@ -1,7 +1,7 @@
 package LogicPack;
 
 public class Parada {
-    private String id;
+    private final String id;
     private String nombre;
     private double coordX;
     private double coordY;
