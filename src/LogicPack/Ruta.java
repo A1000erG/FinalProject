@@ -1,33 +1,4 @@
 package LogicPack;
-<<<<<<< HEAD
-import LogicPack.Algorithms.Algozed;
-
-import java.util.Map;
-
-public class Ruta {
-
-    private Parada destino;
-    private Map<Algozed, Double> atributos;
-
-    public Ruta(Parada destino) {
-        this.destino = destino;
-        this.atributos = new java.util.HashMap<>();
-    }
-
-    public void agregarAtributo(Algozed tipo, Double valor) {
-        atributos.put(tipo, valor);
-    }
-
-    public Double getPeso(Algozed tipo) {
-        // Retorna el valor o un número muy grande si no existe el atributo
-        return atributos.getOrDefault(tipo, Double.MAX_VALUE);
-    }
-
-    public Parada getDestino() {
-        return destino;
-    }
-=======
-
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -53,9 +24,26 @@ public class Ruta {
         return pesos.get(tipo);
     }
 
-    public Parada getDestino(){
+    //private Map<Algozed, Double> atributos;
+
+    /*public Ruta(Parada destino) {
+        this.destino = destino;
+        this.atributos = new java.util.HashMap<>();
+    }*/
+
+    /*public void agregarAtributo(Algozed tipo, Double valor) {
+        atributos.put(tipo, valor);
+    }*/
+
+    /*public Double getPeso(Algozed tipo) {
+        // Retorna el valor o un número muy grande si no existe el atributo
+        return atributos.getOrDefault(tipo, Double.MAX_VALUE);
+    }*/
+
+    public Parada getDestino() {
         return destino;
     }
-
->>>>>>> 23ffe8a (Creacion de interfaz, clases, metodo dentro de Ruta)
 }
+
+
+
