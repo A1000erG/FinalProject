@@ -10,7 +10,7 @@ public class GrafoTransporte {
 
     //  G=(V,E)
     // V = Paradas/Nodo | E = Rutas/Aristas
-    private Map<Parada, List<Ruta>> adyacencias;
+    private final Map<Parada, List<Ruta>> adyacencias;
 
     public GrafoTransporte() {
         this.adyacencias = new java.util.HashMap<>();
@@ -27,10 +27,17 @@ public class GrafoTransporte {
 
     // Complejidad: O(1)
     // Si la parada exite, esta agrega una ruta qque salga de ella
-    public void agregarRuta(Parada origen, Ruta ruta){
-        if (adyacencias.containsKey(origen)) {
-            adyacencias.get(origen).add(ruta);
+    public boolean agregarRuta(Parada origen, Ruta ruta){
+        if (!adyacencias.containsKey(origen)) {
+            return false;
         }
+
+        if (!adyacencias.containsKey(ruta.getDestino())){
+            return false;
+        }
+
+        adyacencias.get(origen).add(ruta);
+        return true;
     }
 
     //public void eliminarParada(Parada origen, Parada destino){}
