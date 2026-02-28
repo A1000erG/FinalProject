@@ -64,4 +64,3 @@ public class Parada {
         return java.util.Objects.hash(id);
     }
 }
-
