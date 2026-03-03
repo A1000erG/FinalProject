@@ -11,8 +11,13 @@ public class Ruta {
     //ponderación que se va modificar
     private Map<Pond, Double> pesos;
 
-    public Ruta(/*Parada destino*/){
-        //this.destino = destino;
+    public Ruta(Parada destino){
+        this.destino = destino;
+        pesos = new EnumMap<>(Pond.class);
+    }
+
+    public Ruta() {
+        this.destino = null;
         pesos = new EnumMap<>(Pond.class);
     }
 
