@@ -1,12 +1,17 @@
 package LogicPack;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Parada {
     private final String id;
     private String nombre;
     private double coordX;
     private double coordY;
-
-    public Parada(String id, String nombre, double coordX, double coordY) {
+    public Parada(@JsonProperty("id") String id,
+                  @JsonProperty("nombre") String nombre,
+                  @JsonProperty("coordX") double coordX,
+                  @JsonProperty("coordY") double coordY) {
         this.id = id;
         this.nombre = nombre;
         this.coordX = coordX;

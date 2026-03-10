@@ -6,10 +6,16 @@ import LogicPack.GrafoTransporte;
 import LogicPack.Parada;
 import LogicPack.Pond;
 import LogicPack.Ruta;
+import PersistancePack.DatosRedJSON;
+import PersistancePack.GestorDatosJSON;
+import PersistancePack.RutaJSON;
 
 import java.util.*;
 
 public class Main {
+    private static final GestorDatosJSON gestorPersistencia = new GestorDatosJSON();
+    public static final String archivo_json="src/main/resources/datos/red_transporte.json";
+
     private static final Scanner scanner = new Scanner(System.in);
     private static final GrafoTransporte grafo = new GrafoTransporte();
     private static final Map<String, Parada> mapaParadas = new HashMap<>();
@@ -28,10 +34,91 @@ public class Main {
                 case 3 -> gestionarRuta();
                 case 4 -> calcularRutaOptima();
                 case 5 -> listarDatos();
-                case 0 -> salir = true;
+                case 0 -> {
+                    // Guardar datos antes de salir
+                    extraerYGuardarGrafo();
+                    salir = true;
+                }
                 default -> System.out.println("Opción no válida.");
             }
         }
+    }
+
+    /**
+     * Paso 6: Carga el JSON y reconstruye el grafo en memoria.
+     * Complejidad: O(|V| + |E|)
+     */
+    private static void cargarYReconstruirGrafo() {
+        DatosRedJSON datos = gestorPersistencia.cargarDatos(archivo_json);
+
+        if (datos == null || datos.getParadas() == null || datos.getParadas().isEmpty()) {
+            System.out.println("Iniciando con una red vacía.");
+            return;
+        }
+
+        // 1. Reconstruir los Nodos O(|V|)
+        for (Parada parada : datos.getParadas().values()) {
+            mapaParadas.put(parada.getId(), parada);
+            grafo.agregarParada(parada);
+        }
+
+        // 2. Reconstruir las Aristas O(|E|)
+        if (datos.getRutas() != null) {
+            for (RutaJSON arista : datos.getRutas()) {
+                Parada origen = mapaParadas.get(arista.getIdOrigen());
+                Parada destino = mapaParadas.get(arista.getIdDestino());
+
+                if (origen != null && destino != null) {
+                    Ruta nuevaRuta = new Ruta(destino);
+
+                    // Restaurar los pesos del JSON a la Ruta
+                    if (arista.getPesos() != null) {
+                        for (Map.Entry<Pond, Double> peso : arista.getPesos().entrySet()) {
+                            nuevaRuta.setPond(peso.getKey(), peso.getValue());
+                        }
+                    }
+                    grafo.agregarRuta(origen, nuevaRuta);
+                }
+            }
+        }
+        System.out.println("Red cargada con éxito: " + mapaParadas.size() + " paradas y " +
+                (datos.getRutas() != null ? datos.getRutas().size() : 0) + " rutas.");
+    }
+
+    /**
+     * Paso 5: Extrae las rutas del GrafoTransporte, empaqueta todo y lo guarda.
+     * Complejidad: O(|V| + |E|)
+     */
+    private static void extraerYGuardarGrafo() {
+        System.out.println("\nGuardando datos de la red...");
+        List<RutaJSON> listaAristas = new ArrayList<>();
+
+        // Recorremos cada parada en el mapa para buscar sus rutas
+        for (Parada origen : mapaParadas.values()) {
+            List<Ruta> rutas = grafo.obtenerVecinos(origen);
+
+            // Por cada ruta real, creamos un DTO (AristaJSON)
+            for (Ruta ruta : rutas) {
+                RutaJSON arista = new RutaJSON();
+                arista.setIdOrigen(origen.getId());
+                arista.setIdDestino(ruta.getDestino().getId());
+
+                // Extraer las ponderaciones usando el enum
+                Map<Pond, Double> pesosDTO = new EnumMap<>(Pond.class);
+                for (Pond p : Pond.values()) {
+                    Double valor = ruta.getPond(p);
+                    if (valor != null) {
+                        pesosDTO.put(p, valor);
+                    }
+                }
+                arista.setPesos(pesosDTO);
+                listaAristas.add(arista);
+            }
+        }
+
+        // Empaquetar y guardar
+        DatosRedJSON datosFinales = new DatosRedJSON(mapaParadas, listaAristas);
+        gestorPersistencia.guardarDatos(datosFinales, archivo_json);
     }
 
     private static void mostrarMenu() {
