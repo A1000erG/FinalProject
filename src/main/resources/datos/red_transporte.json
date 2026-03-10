@@ -1,23 +1,74 @@
 {
   "paradas" : {
-    "1003" : {
-      "id" : "1003",
-      "nombre" : "La",
-      "coordX" : 10.0,
-      "coordY" : 11.0
+    "101" : {
+      "id" : "101",
+      "nombre" : "dhgs",
+      "coordX" : 23.0,
+      "coordY" : 34.0
     },
-    "1002" : {
-      "id" : "1002",
-      "nombre" : "El",
-      "coordX" : 37.0,
-      "coordY" : 60.0
+    "102" : {
+      "id" : "102",
+      "nombre" : "nusfi",
+      "coordX" : 14.0,
+      "coordY" : 23.0
     },
-    "1001" : {
-      "id" : "1001",
-      "nombre" : "LaMaya",
-      "coordX" : 20.0,
-      "coordY" : 40.0
+    "103" : {
+      "id" : "103",
+      "nombre" : "wefiui",
+      "coordX" : 12.0,
+      "coordY" : 67.0
+    },
+    "104" : {
+      "id" : "104",
+      "nombre" : "mwedk",
+      "coordX" : 49.0,
+      "coordY" : 82.0
     }
   },
-  "rutas" : [ ]
+  "rutas" : [ {
+    "idOrigen" : "101",
+    "idDestino" : "103",
+    "pesos" : {
+      "COSTO" : 90.0,
+      "TIEMPO" : 34.0,
+      "DISTANCIA" : 12.0,
+      "TRANSBORDOS" : 46.0
+    }
+  }, {
+    "idOrigen" : "102",
+    "idDestino" : "101",
+    "pesos" : {
+      "COSTO" : 34.0,
+      "TIEMPO" : 12.0,
+      "DISTANCIA" : 2.0,
+      "TRANSBORDOS" : 56.0
+    }
+  }, {
+    "idOrigen" : "102",
+    "idDestino" : "104",
+    "pesos" : {
+      "COSTO" : 67.0,
+      "TIEMPO" : 46.0,
+      "DISTANCIA" : 20.0,
+      "TRANSBORDOS" : 25.0
+    }
+  }, {
+    "idOrigen" : "103",
+    "idDestino" : "102",
+    "pesos" : {
+      "COSTO" : -20.0,
+      "TIEMPO" : 67.0,
+      "DISTANCIA" : 15.0,
+      "TRANSBORDOS" : 56.0
+    }
+  }, {
+    "idOrigen" : "104",
+    "idDestino" : "103",
+    "pesos" : {
+      "COSTO" : 123.0,
+      "TIEMPO" : 29.0,
+      "DISTANCIA" : 34.0,
+      "TRANSBORDOS" : 67.0
+    }
+  } ]
 }

@@ -8,6 +8,7 @@ public class Parada {
     private String nombre;
     private double coordX;
     private double coordY;
+    @JsonCreator
     public Parada(@JsonProperty("id") String id,
                   @JsonProperty("nombre") String nombre,
                   @JsonProperty("coordX") double coordX,

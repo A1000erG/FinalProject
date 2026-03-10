@@ -23,7 +23,7 @@ public class GrafoTransporte {
     }
 
     // Complejidad: O(1)
-    // Si la parada exite, esta agrega una ruta qque salga de ella
+    // Si la parada exite, esta agrega una ruta que salga de ella
     public boolean agregarRuta(Parada origen, Ruta ruta){
         if (!adyacencias.containsKey(origen)) {
             return false;

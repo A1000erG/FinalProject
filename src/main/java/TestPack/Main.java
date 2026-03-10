@@ -156,7 +156,7 @@ public class Main {
             return;
         }
 
-        Ruta nuevaRuta = new Ruta();
+        Ruta nuevaRuta = new Ruta(p2);
         // Validación de ponderaciones según el PDF
         nuevaRuta.setPond(Pond.TIEMPO, leerValidado("Tiempo (min): ", false));
         nuevaRuta.setPond(Pond.DISTANCIA, leerValidado("Distancia (km): ", false));
