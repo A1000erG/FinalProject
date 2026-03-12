@@ -1,11 +1,8 @@
 package TestPack;
+import LogicPack.*;
 import LogicPack.Algorithms.Algozed;
 import LogicPack.Algorithms.BellmanFordAlgo;
 import LogicPack.Algorithms.DijkstraAlgo;
-import LogicPack.GrafoTransporte;
-import LogicPack.Parada;
-import LogicPack.Pond;
-import LogicPack.Ruta;
 import PersistancePack.DatosRedJSON;
 import PersistancePack.GestorDatosJSON;
 import PersistancePack.RutaJSON;
@@ -23,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("=== SISTEMA DE GESTIÓN DE RUTAS (PUCMM) ===");
         boolean salir = false;
-
+        cargarYReconstruirGrafo();
         while (!salir) {
             mostrarMenu();
             int opcion = leerEntero("Seleccione una opción: ");
@@ -49,18 +46,20 @@ public class Main {
      * Complejidad: O(|V| + |E|)
      */
     private static void cargarYReconstruirGrafo() {
-        DatosRedJSON datos = gestorPersistencia.cargarDatos(archivo_json);
+            DatosRedJSON datos = gestorPersistencia.cargarDatos(archivo_json);
+            if (datos == null || datos.getParadas() == null || datos.getParadas().isEmpty()) {
+                System.out.println("Iniciando con una red vacía.");
+                return;
+            }
 
-        if (datos == null || datos.getParadas() == null || datos.getParadas().isEmpty()) {
-            System.out.println("Iniciando con una red vacía.");
-            return;
-        }
+            // 1. Reconstruir los Nodos O(|V|)
+            for (Parada parada : datos.getParadas().values()) {
+                mapaParadas.put(parada.getId(), parada);
+                grafo.agregarParada(parada);
 
-        // 1. Reconstruir los Nodos O(|V|)
-        for (Parada parada : datos.getParadas().values()) {
-            mapaParadas.put(parada.getId(), parada);
-            grafo.agregarParada(parada);
-        }
+                // NUEVO: Sincronizar el contador del Singleton
+                GeneradorIdParada.getInstancia().sincronizarConIdExistente(parada.getId());
+            }
 
         // 2. Reconstruir las Aristas O(|E|)
         if (datos.getRutas() != null) {
@@ -132,17 +131,15 @@ public class Main {
     }
 
     private static void agregarParada() {
-        System.out.print("ID de la Parada: ");
-        String id = scanner.next();
         System.out.print("Nombre: ");
         String nombre = scanner.next();
         double x = leerDouble("Coordenada X: ");
         double y = leerDouble("Coordenada Y: ");
 
-        Parada nueva = new Parada(id, nombre, x, y);
+        Parada nueva = new Parada(nombre, x, y);
         grafo.agregarParada(nueva);
-        mapaParadas.put(id, nueva);
-        System.out.println("Parada agregada exitosamente.");
+        mapaParadas.put(nueva.getId(), nueva);
+        System.out.println("Parada agregada exitosamente con ID: " + nueva.getId());
     }
 
     private static void gestionarRuta() {
@@ -174,11 +171,11 @@ public class Main {
         System.out.print("ID Destino: ");
         Parada p2 = mapaParadas.get(scanner.next());
 
-        System.out.println("Optimizar por: 1. Tiempo | 2. Distancia | 3. Costo | 4. Transbordos");
+        System.out.println("Optimizar por: 1. Costo | 2. Tiempo | 3. Distancia | 4. Transbordos");
         int c = leerEntero("Criterio: ");
         Pond pond = Pond.values()[c - 1];
 
-        // Decisión de Algoritmo: Si hay costos negativos, usar Bellman-Ford [cite: 41, 141]
+        // Decisión de Algoritmo: Si hay costos negativos, usar Bellman-Ford
         Algozed<Parada, Ruta> algo = (pond == Pond.COSTO) ? new BellmanFordAlgo() : new DijkstraAlgo();
 
         System.out.println("Ejecutando " + algo.getClass().getSimpleName() + "...");

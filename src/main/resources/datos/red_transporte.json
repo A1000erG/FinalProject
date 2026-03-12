@@ -1,74 +1,104 @@
 {
   "paradas" : {
-    "101" : {
-      "id" : "101",
-      "nombre" : "dhgs",
+    "P-005" : {
+      "id" : "P-005",
+      "nombre" : "E",
+      "coordX" : 81.0,
+      "coordY" : 24.0
+    },
+    "P-006" : {
+      "id" : "P-006",
+      "nombre" : "P",
+      "coordX" : 23.0,
+      "coordY" : 90.0
+    },
+    "P-001" : {
+      "id" : "P-001",
+      "nombre" : "A",
       "coordX" : 23.0,
       "coordY" : 34.0
     },
-    "102" : {
-      "id" : "102",
-      "nombre" : "nusfi",
-      "coordX" : 14.0,
-      "coordY" : 23.0
-    },
-    "103" : {
-      "id" : "103",
-      "nombre" : "wefiui",
-      "coordX" : 12.0,
+    "P-002" : {
+      "id" : "P-002",
+      "nombre" : "B",
+      "coordX" : 45.0,
       "coordY" : 67.0
     },
-    "104" : {
-      "id" : "104",
-      "nombre" : "mwedk",
-      "coordX" : 49.0,
-      "coordY" : 82.0
+    "P-003" : {
+      "id" : "P-003",
+      "nombre" : "C",
+      "coordX" : 12.0,
+      "coordY" : 39.0
+    },
+    "P-004" : {
+      "id" : "P-004",
+      "nombre" : "D",
+      "coordX" : 72.0,
+      "coordY" : 62.0
     }
   },
   "rutas" : [ {
-    "idOrigen" : "101",
-    "idDestino" : "103",
+    "idOrigen" : "P-005",
+    "idDestino" : "P-002",
+    "pesos" : {
+      "COSTO" : 23.0,
+      "TIEMPO" : 23.0,
+      "DISTANCIA" : 87.0,
+      "TRANSBORDOS" : 1.0
+    }
+  }, {
+    "idOrigen" : "P-005",
+    "idDestino" : "P-004",
     "pesos" : {
       "COSTO" : 90.0,
       "TIEMPO" : 34.0,
-      "DISTANCIA" : 12.0,
-      "TRANSBORDOS" : 46.0
-    }
-  }, {
-    "idOrigen" : "102",
-    "idDestino" : "101",
-    "pesos" : {
-      "COSTO" : 34.0,
-      "TIEMPO" : 12.0,
-      "DISTANCIA" : 2.0,
-      "TRANSBORDOS" : 56.0
-    }
-  }, {
-    "idOrigen" : "102",
-    "idDestino" : "104",
-    "pesos" : {
-      "COSTO" : 67.0,
-      "TIEMPO" : 46.0,
-      "DISTANCIA" : 20.0,
-      "TRANSBORDOS" : 25.0
-    }
-  }, {
-    "idOrigen" : "103",
-    "idDestino" : "102",
-    "pesos" : {
-      "COSTO" : -20.0,
-      "TIEMPO" : 67.0,
       "DISTANCIA" : 15.0,
-      "TRANSBORDOS" : 56.0
+      "TRANSBORDOS" : 34.0
     }
   }, {
-    "idOrigen" : "104",
-    "idDestino" : "103",
+    "idOrigen" : "P-001",
+    "idDestino" : "P-005",
     "pesos" : {
-      "COSTO" : 123.0,
-      "TIEMPO" : 29.0,
+      "COSTO" : -10.0,
+      "TIEMPO" : 23.0,
+      "DISTANCIA" : 8.0,
+      "TRANSBORDOS" : 2.0
+    }
+  }, {
+    "idOrigen" : "P-002",
+    "idDestino" : "P-001",
+    "pesos" : {
+      "COSTO" : 30.0,
+      "TIEMPO" : 21.0,
+      "DISTANCIA" : 18.0,
+      "TRANSBORDOS" : 6.0
+    }
+  }, {
+    "idOrigen" : "P-002",
+    "idDestino" : "P-004",
+    "pesos" : {
+      "COSTO" : -13.0,
+      "TIEMPO" : 10.0,
+      "DISTANCIA" : 5.0,
+      "TRANSBORDOS" : 1.0
+    }
+  }, {
+    "idOrigen" : "P-003",
+    "idDestino" : "P-005",
+    "pesos" : {
+      "COSTO" : 17.0,
+      "TIEMPO" : 56.0,
       "DISTANCIA" : 34.0,
-      "TRANSBORDOS" : 67.0
+      "TRANSBORDOS" : 5.0
+    }
+  }, {
+    "idOrigen" : "P-004",
+    "idDestino" : "P-003",
+    "pesos" : {
+      "COSTO" : 46.0,
+      "TIEMPO" : 34.0,
+      "DISTANCIA" : 25.0,
+      "TRANSBORDOS" : 3.0
     }
   } ]
 }

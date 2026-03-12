@@ -9,11 +9,19 @@ public class Parada {
     private double coordX;
     private double coordY;
     @JsonCreator
+    //Constructor pa JSON
     public Parada(@JsonProperty("id") String id,
                   @JsonProperty("nombre") String nombre,
                   @JsonProperty("coordX") double coordX,
                   @JsonProperty("coordY") double coordY) {
         this.id = id;
+        this.nombre = nombre;
+        this.coordX = coordX;
+        this.coordY = coordY;
+    }
+    //Constructor normal
+    public Parada(String nombre, double coordX, double coordY) {
+        this.id = GeneradorIdParada.getInstancia().generarId();
         this.nombre = nombre;
         this.coordX = coordX;
         this.coordY = coordY;
