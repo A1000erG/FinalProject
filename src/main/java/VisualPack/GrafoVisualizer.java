@@ -1,10 +1,10 @@
-package main.java.VisualPack;
+package VisualPack;
 
 import LogicPack.GrafoTransporte;
 import LogicPack.Parada;
 import LogicPack.Ruta;
 import javafx.scene.layout.Pane;
-import main.java.VisualPack.NodoVisual;
+//import main.java.VisualPack.NodoVisual;
 
 import java.util.HashMap;
 import java.util.List;

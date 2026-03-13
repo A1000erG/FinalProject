@@ -1,4 +1,4 @@
-package main.java.VisualPack;
+package VisualPack;
 
 import LogicPack.Parada;
 import javafx.scene.layout.StackPane;

@@ -3,7 +3,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class Ruta {
-    private Parada destino;
+    private LogicPack.Parada destino;
 
     //Este mapa (pesos) permite guardar cada valor de los pesos necesarios con su clave correspondiente
     //Con esta implementación de mapas podemos hacer un solo set y get
@@ -45,7 +45,7 @@ public class Ruta {
         return atributos.getOrDefault(tipo, Double.MAX_VALUE);
     }*/
 
-    public Parada getDestino() {
+    public LogicPack.Parada getDestino() {
         return destino;
     }
 }

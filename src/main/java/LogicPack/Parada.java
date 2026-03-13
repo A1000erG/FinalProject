@@ -21,7 +21,7 @@ public class Parada {
     }
     //Constructor normal
     public Parada(String nombre, double coordX, double coordY) {
-        this.id = GeneradorIdParada.getInstancia().generarId();
+        this.id = LogicPack.GeneradorIdParada.getInstancia().generarId();
         this.nombre = nombre;
         this.coordX = coordX;
         this.coordY = coordY;
@@ -70,11 +70,4 @@ public class Parada {
         return id.equals(parada.id);
     }
 
-    /*
-    Genera un codigo que esta asociado con la parada
-     */
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(id);
-    }
 }

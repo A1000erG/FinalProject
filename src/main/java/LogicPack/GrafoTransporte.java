@@ -1,5 +1,8 @@
 package LogicPack;
 
+import LogicPack.Parada;
+import LogicPack.Ruta;
+
 import java.util.List;
 import java.util.Map;
 

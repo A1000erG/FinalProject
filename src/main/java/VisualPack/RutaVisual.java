@@ -1,4 +1,4 @@
-package main.java.VisualPack;
+package VisualPack;
 
 import LogicPack.Ruta;
 import javafx.scene.Group;
