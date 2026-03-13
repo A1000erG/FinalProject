@@ -1,4 +1,4 @@
-module FinalProject { // Asegúrate de que este nombre sea el mismo que el de tu carpeta raíz
+module FinalProject {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.fasterxml.jackson.databind;
@@ -10,5 +10,5 @@ module FinalProject { // Asegúrate de que este nombre sea el mismo que el de tu
 
     exports VisualPack;
     exports LogicPack;
-    exports PersistancePack; // Añade esto para que el TestPack pueda verlo
+    exports PersistancePack;
 }

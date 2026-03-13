@@ -42,8 +42,7 @@ public class Main {
     }
 
     /**
-     * Paso 6: Carga el JSON y reconstruye el grafo en memoria.
-     * Complejidad: O(|V| + |E|)
+     * Carga el JSON y reconstruye el grafo en memoria.
      */
     private static void cargarYReconstruirGrafo() {
             DatosRedJSON datos = gestorPersistencia.cargarDatos(archivo_json);
@@ -52,16 +51,13 @@ public class Main {
                 return;
             }
 
-            // 1. Reconstruir los Nodos O(|V|)
             for (Parada parada : datos.getParadas().values()) {
                 mapaParadas.put(parada.getId(), parada);
                 grafo.agregarParada(parada);
 
-                // NUEVO: Sincronizar el contador del Singleton
                 GeneradorIdParada.getInstancia().sincronizarConIdExistente(parada.getId());
             }
 
-        // 2. Reconstruir las Aristas O(|E|)
         if (datos.getRutas() != null) {
             for (RutaJSON arista : datos.getRutas()) {
                 Parada origen = mapaParadas.get(arista.getIdOrigen());
@@ -85,24 +81,20 @@ public class Main {
     }
 
     /**
-     * Paso 5: Extrae las rutas del GrafoTransporte, empaqueta todo y lo guarda.
-     * Complejidad: O(|V| + |E|)
+     * Extrae las rutas del GrafoTransporte, empaqueta todo y lo guarda.
      */
     private static void extraerYGuardarGrafo() {
         System.out.println("\nGuardando datos de la red...");
         List<RutaJSON> listaAristas = new ArrayList<>();
 
-        // Recorremos cada parada en el mapa para buscar sus rutas
         for (Parada origen : mapaParadas.values()) {
             List<Ruta> rutas = grafo.obtenerVecinos(origen);
 
-            // Por cada ruta real, creamos un DTO (AristaJSON)
             for (Ruta ruta : rutas) {
                 RutaJSON arista = new RutaJSON();
                 arista.setIdOrigen(origen.getId());
                 arista.setIdDestino(ruta.getDestino().getId());
 
-                // Extraer las ponderaciones usando el enum
                 Map<Pond, Double> pesosDTO = new EnumMap<>(Pond.class);
                 for (Pond p : Pond.values()) {
                     Double valor = ruta.getPond(p);
@@ -115,7 +107,6 @@ public class Main {
             }
         }
 
-        // Empaquetar y guardar
         DatosRedJSON datosFinales = new DatosRedJSON(mapaParadas, listaAristas);
         gestorPersistencia.guardarDatos(datosFinales, archivo_json);
     }

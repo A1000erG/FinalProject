@@ -15,11 +15,9 @@ public class MainApp extends Application {
         Scene escena = new Scene(fxmlLoader.load(), 1200, 720);
         escena.getStylesheets().add(getClass().getResource("/gui/estilos.css").toExternalForm());
 
-        //Configuración de la Ventana (Stage) como en el video
         escenarioPrincipal.setTitle("Sistema de Gestión de Rutas de Transporte Público - PUCMM");
         escenarioPrincipal.setScene(escena);
 
-        //Esto es para que la pantalla no se rompa
         escenarioPrincipal.setMinWidth(1000);
         escenarioPrincipal.setMinHeight(700);
 

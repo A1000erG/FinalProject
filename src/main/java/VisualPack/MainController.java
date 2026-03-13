@@ -131,7 +131,6 @@ public class MainController {
     }
 
     private void configurarEventoEnterRuta() {
-        // Aquí se agregó un listener global para la tecla Enter
         panelGrafo.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
@@ -166,7 +165,6 @@ public class MainController {
         }
 
         try {
-            // Ejecución de la búsqueda
             java.util.List<LogicPack.Ruta> caminoOptimo = algoritmo.buscarRutaOptima(grafo, origen, destino, criterio);
 
             if (caminoOptimo.isEmpty()) {
@@ -184,8 +182,6 @@ public class MainController {
 
                 mensajeRuta.append("\n\nTotal (").append(criterio.name()).append("): ").append(totalCriterio);
 
-                // Más adelante esto se dibujará en el lienzo (cambiando el color de las aristas),
-                // por ahora lo mostramos en una alerta.
                 Alert resultado = new Alert(Alert.AlertType.INFORMATION, mensajeRuta.toString());
                 resultado.setHeaderText("¡Ruta Óptima Calculada!");
                 resultado.show();
@@ -199,7 +195,6 @@ public class MainController {
 
     private void mostrarPanelFlotante(String titulo) {
         panelFlotante.setVisible(true);
-        //Limpiar el panelFlotante e inyectarle los TextField correspondientes dinámicamente
     }
 
     private void cargarDatos() {

@@ -1,8 +1,5 @@
 package LogicPack;
 
-import LogicPack.Parada;
-import LogicPack.Ruta;
-
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +13,6 @@ public class GrafoTransporte {
         this.adyacencias = new java.util.HashMap<>();
     }
 
-
-    //----------------- METODOS -----------------
 
     // Complejidad: O(1)
     // Si la parada no exite la agrega

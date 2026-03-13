@@ -33,7 +33,6 @@ public class GrafoVisualizer {
             mapaNodosVisuales.put(p, nodoV);
         }
 
-        // Dibujar las Rutas
         for (Parada origen : todasLasParadas) {
             NodoVisual nodoOrigen = mapaNodosVisuales.get(origen);
             List<Ruta> rutas = grafo.obtenerVecinos(origen);
@@ -47,7 +46,6 @@ public class GrafoVisualizer {
             }
         }
 
-        // Agregar los Nodos al lienzo (después de las rutas)
         lienzo.getChildren().addAll(mapaNodosVisuales.values());
     }
 }

@@ -30,10 +30,6 @@ public class Parada {
     public String getId() {
         return id;
     }
-// Conveniente no tener
-//    public void setId(String id) {
-//        this.id = id;
-//    }
 
     public String getNombre() {
         return nombre;
@@ -55,9 +51,6 @@ public class Parada {
     public void setCoordY(double coordY) {
         this.coordY = coordY;
     }
-
-
-    //----------------- METODOS -----------------
 
     /*
     Compara esta parada con otro objeto y determina si son iguales.

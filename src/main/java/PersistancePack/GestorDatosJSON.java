@@ -16,18 +16,17 @@ public class GestorDatosJSON {
 
     public GestorDatosJSON() {
         this.mapper = new ObjectMapper();
-        // Habilitamos la indentación para que el archivo .json sea legible por humanos
+
         this.mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     /**
      * Guarda la estructura de la red en un archivo JSON.
-     * Complejidad: O(|V| + |E|), ya que el serializador debe recorrer
      * todos los vértices y aristas una vez para convertirlos a texto.
      *
      * Parametros:
      * - datos Objeto DTO que contiene las paradas y las rutas planas.
-     * - rutaArchivo Ruta donde se guardará el archivo ("src/main/resources/datos/red.json").
+     * - rutaArchivo Ruta donde se guardará el archivo
      */
     public void guardarDatos(DatosRedJSON datos, String rutaArchivo) {
         try {
@@ -48,7 +47,6 @@ public class GestorDatosJSON {
 
     /**
      * Carga la estructura de la red desde un archivo JSON.
-     * Complejidad: O(|V| + |E|), el parser lee el archivo secuencialmente e
      * instancia los objetos correspondientes.
      *
      * Parámetros: rutaArchivo Ruta desde donde se leerá el archivo.
@@ -58,7 +56,6 @@ public class GestorDatosJSON {
         try {
             File archivo = new File(rutaArchivo);
 
-            // Si es la primera vez que se ejecuta y no hay archivo, retorna null
             if (!archivo.exists()) {
                 System.out.println("No se encontró un archivo de datos previo. Se iniciará una red vacía.");
                 return null;

@@ -17,33 +17,27 @@ import java.util.List;
 public class DijkstraAlgo implements Algozed<Parada,Ruta> {
     @Override
     public List<Ruta> buscarRutaOptima(GrafoTransporte grafo, Parada origen, Parada destino, Pond criterio) {
-        // Validaciones iniciales
+
         if (origen == null || destino == null || grafo == null) return new ArrayList<>();
         if (origen.equals(destino)) return new ArrayList<>();
 
-        // Mapas para rastrear distancias mínimas y el camino recorrido
         Map<Parada, Double> distancias = new HashMap<>();
-        Map<Parada, Ruta> rutaPrevia = new HashMap<>(); // Guarda la arista que llevó a la parada
-        Map<Parada, Parada> paradaPrevia = new HashMap<>(); // Guarda el nodo anterior
+        Map<Parada, Ruta> rutaPrevia = new HashMap<>();
+        Map<Parada, Parada> paradaPrevia = new HashMap<>();
 
-        // PriorityQueue para seleccionar la parada con la distancia más corta acumulada
         PriorityQueue<ParadaDistancia> colaPrioridad = new PriorityQueue<>(Comparator.comparingDouble(pd -> pd.distancia));
 
-        // Inicializar distancias: O(|V|) [cite: 136]
         distancias.put(origen, 0.0);
         colaPrioridad.add(new ParadaDistancia(origen, 0.0));
 
         while (!colaPrioridad.isEmpty()) {
             Parada actual = colaPrioridad.poll().parada;
 
-            // Si llegamos al destino, podemos detener la búsqueda (Optimización)
             if (actual.equals(destino)) break;
 
-            // Explorar vecinos: O(E) sobre el total del algoritmo [cite: 134, 158]
             for (Ruta ruta : grafo.obtenerVecinos(actual)) {
                 Double pesoRuta = ruta.getPond(criterio);
 
-                // Validación de pesos negativos (Dijkstra no los soporta)
                 if (pesoRuta < 0) {
                     throw new IllegalArgumentException("Dijkstra no admite pesos negativos. Use Bellman-Ford.");
                 }
@@ -70,7 +64,6 @@ public class DijkstraAlgo implements Algozed<Parada,Ruta> {
         LinkedList<Ruta> camino = new LinkedList<>();
         Parada paso = destino;
 
-        // Si no hay rastro del destino en el mapa de previos, no hay ruta posible
         if (paradaPrevia.get(paso) == null && rutaPrevia.get(paso) == null) {
             return new ArrayList<>();
         }
