@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Implementación del algoritmo de Dijkstra para encontrar la ruta más corta.
- * Se utiliza una PriorityQueue para optimizar la selección del nodo con menor distancia.
+ * Se utiliza una PriorityQueue para optimizar la selección del nodo con menor ponderacion.
  */
 
 public class DijkstraAlgo implements Algozed<Parada,Ruta> {
@@ -21,25 +21,25 @@ public class DijkstraAlgo implements Algozed<Parada,Ruta> {
         if (origen == null || destino == null || grafo == null) return new ArrayList<>();
         if (origen.equals(destino)) return new ArrayList<>();
 
-        // Mapas para rastrear distancias mínimas y el camino recorrido
-        Map<Parada, Double> distancias = new HashMap<>();
+        // Mapas para rastrear ponderaciones mínimas y el camino recorrido
+        Map<Parada, Double> ponderaciones = new HashMap<>();
         Map<Parada, Ruta> rutaPrevia = new HashMap<>(); // Guarda la arista que llevó a la parada
         Map<Parada, Parada> paradaPrevia = new HashMap<>(); // Guarda el nodo anterior
 
         // PriorityQueue para seleccionar la parada con la distancia más corta acumulada
-        PriorityQueue<ParadaDistancia> colaPrioridad = new PriorityQueue<>(Comparator.comparingDouble(pd -> pd.distancia));
+        PriorityQueue<ParadaDistancia> colaPrioridad = new PriorityQueue<>(Comparator.comparingDouble(pd -> pd.ponderacion));
 
-        // Inicializar distancias: O(|V|) [cite: 136]
-        distancias.put(origen, 0.0);
+        // Inicializar ponderaciones
+        ponderaciones.put(origen, 0.0);
         colaPrioridad.add(new ParadaDistancia(origen, 0.0));
 
         while (!colaPrioridad.isEmpty()) {
             Parada actual = colaPrioridad.poll().parada;
 
-            // Si llegamos al destino, podemos detener la búsqueda (Optimización)
+            // Si llegamos al destino, podemos detener la búsqueda
             if (actual.equals(destino)) break;
 
-            // Explorar vecinos: O(E) sobre el total del algoritmo [cite: 134, 158]
+            // Explorar vecinos
             for (Ruta ruta : grafo.obtenerVecinos(actual)) {
                 Double pesoRuta = ruta.getPond(criterio);
 
@@ -48,10 +48,10 @@ public class DijkstraAlgo implements Algozed<Parada,Ruta> {
                     throw new IllegalArgumentException("Dijkstra no admite pesos negativos. Use Bellman-Ford.");
                 }
 
-                double nuevaDistancia = distancias.get(actual) + pesoRuta;
+                double nuevaDistancia = ponderaciones.get(actual) + pesoRuta;
 
-                if (nuevaDistancia < distancias.getOrDefault(ruta.getDestino(), Double.MAX_VALUE)) {
-                    distancias.put(ruta.getDestino(), nuevaDistancia);
+                if (nuevaDistancia < ponderaciones.getOrDefault(ruta.getDestino(), Double.MAX_VALUE)) {
+                    ponderaciones.put(ruta.getDestino(), nuevaDistancia);
                     paradaPrevia.put(ruta.getDestino(), actual);
                     rutaPrevia.put(ruta.getDestino(), ruta);
                     colaPrioridad.add(new ParadaDistancia(ruta.getDestino(), nuevaDistancia));
@@ -64,7 +64,7 @@ public class DijkstraAlgo implements Algozed<Parada,Ruta> {
 
     /**
      * Reconstruye la lista de rutas desde el destino hacia el origen.
-     * Complejidad: O(|V|)
+     *
      */
     private List<Ruta> reconstruirCamino(Map<Parada, Parada> paradaPrevia, Map<Parada, Ruta> rutaPrevia, Parada destino) {
         LinkedList<Ruta> camino = new LinkedList<>();
@@ -88,11 +88,11 @@ public class DijkstraAlgo implements Algozed<Parada,Ruta> {
      */
     private static class ParadaDistancia {
         Parada parada;
-        double distancia;
+        double ponderacion;
 
-        ParadaDistancia(Parada parada, double distancia) {
+        ParadaDistancia(Parada parada, double ponderacion) {
             this.parada = parada;
-            this.distancia = distancia;
+            this.ponderacion = ponderacion;
         }
     }
 }

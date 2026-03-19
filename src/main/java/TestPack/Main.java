@@ -52,16 +52,16 @@ public class Main {
                 return;
             }
 
-            // 1. Reconstruir los Nodos O(|V|)
+            // Reconstruir los Nodos O(|V|)
             for (Parada parada : datos.getParadas().values()) {
                 mapaParadas.put(parada.getId(), parada);
                 grafo.agregarParada(parada);
 
-                // NUEVO: Sincronizar el contador del Singleton
+                //Sincronizar el contador del Singleton
                 GeneradorIdParada.getInstancia().sincronizarConIdExistente(parada.getId());
             }
 
-        // 2. Reconstruir las Aristas O(|E|)
+        // Reconstruir las Aristas
         if (datos.getRutas() != null) {
             for (RutaJSON arista : datos.getRutas()) {
                 Parada origen = mapaParadas.get(arista.getIdOrigen());
@@ -86,7 +86,7 @@ public class Main {
 
     /**
      * Paso 5: Extrae las rutas del GrafoTransporte, empaqueta todo y lo guarda.
-     * Complejidad: O(|V| + |E|)
+     *
      */
     private static void extraerYGuardarGrafo() {
         System.out.println("\nGuardando datos de la red...");
@@ -189,7 +189,7 @@ public class Main {
         }
     }
 
-    // --- MÉTODOS AUXILIARES DE VALIDACIÓN ---
+    // --- Métodos auxiliares para validar ---
 
     private static double leerValidado(String mensaje, boolean permiteNegativo) {
         while (true) {

@@ -1,4 +1,4 @@
-package main.java.VisualPack;
+package VisualPack;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +16,7 @@ public class MainApp extends Application {
         escena.getStylesheets().add(getClass().getResource("/gui/estilos.css").toExternalForm());
 
         //Configuración de la Ventana (Stage) como en el video
-        escenarioPrincipal.setTitle("Sistema de Gestión de Rutas de Transporte Público - PUCMM");
+        escenarioPrincipal.setTitle("Sistema de Gestión de Rutas de Transporte Público");
         escenarioPrincipal.setScene(escena);
 
         //Esto es para que la pantalla no se rompa

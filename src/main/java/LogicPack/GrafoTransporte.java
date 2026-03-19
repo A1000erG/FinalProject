@@ -14,15 +14,11 @@ public class GrafoTransporte {
     }
 
 
-    //----------------- METODOS -----------------
-
-    // Complejidad: O(1)
     // Si la parada no exite la agrega
     public void agregarParada(Parada p){
         adyacencias.putIfAbsent(p, new java.util.ArrayList<>());
     }
 
-    // Complejidad: O(1)
     // Si la parada exite, esta agrega una ruta que salga de ella
     public boolean agregarRuta(Parada origen, Ruta ruta){
         if (!adyacencias.containsKey(origen)) {
@@ -39,7 +35,6 @@ public class GrafoTransporte {
 
     //public void eliminarParada(Parada origen, Parada destino){}
 
-    // Complejidad: O(E) donde E es el número de rutas del nodo
     // Busca en la lista de rutas del origen y elimina la que tenga ese destino.
     public void eliminarRuta(Parada origen, Parada destino){
         List<Ruta> rutas = adyacencias.get(origen);
@@ -48,8 +43,7 @@ public class GrafoTransporte {
         }
     }
 
-    // Complejidad: $O(1)
-    // Retorna la todas las tutas que tiene esa parada
+    // Retorna todas las rutas que tiene esa parada
     public List<Ruta> obtenerVecinos(Parada p){
         return adyacencias.getOrDefault(p, new java.util.ArrayList<>());
     }

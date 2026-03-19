@@ -1,6 +1,7 @@
-package main.java.VisualPack;
+package VisualPack;
 
 import LogicPack.Ruta;
+import VisualPack.NodoVisual;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;

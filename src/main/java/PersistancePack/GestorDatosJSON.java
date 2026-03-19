@@ -22,7 +22,6 @@ public class GestorDatosJSON {
 
     /**
      * Guarda la estructura de la red en un archivo JSON.
-     * Complejidad: O(|V| + |E|), ya que el serializador debe recorrer
      * todos los vértices y aristas una vez para convertirlos a texto.
      *
      * Parametros:

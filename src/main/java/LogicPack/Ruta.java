@@ -29,8 +29,6 @@ public class Ruta {
         return pesos.get(tipo);
     }
 
-    //private Map<Algozed, Double> atributos;
-
     /*public Ruta(Parada destino) {
         this.destino = destino;
         this.atributos = new java.util.HashMap<>();

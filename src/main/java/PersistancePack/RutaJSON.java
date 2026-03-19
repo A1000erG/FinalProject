@@ -16,7 +16,7 @@ public class RutaJSON {
     private Map<Pond, Double> pesos;
 
     /**
-     * Constructor vacío: Obligatorio para que Jackson pueda deserializar (O(1)).
+     * Constructor vacío: Obligatorio para que Jackson pueda deserializar.
      */
     public RutaJSON() {
     }
@@ -29,8 +29,6 @@ public class RutaJSON {
         this.idDestino = idDestino;
         this.pesos = pesos;
     }
-
-    // --- GETTERS Y SETTERS OBLIGATORIOS PARA JACKSON ---
 
     public String getIdOrigen() {
         return idOrigen;

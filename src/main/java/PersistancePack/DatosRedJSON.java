@@ -10,14 +10,11 @@ import java.util.Map;
  */
 public class DatosRedJSON {
 
-    // Representa el conjunto de Vértices (V)
     private Map<String, Parada> paradas;
-
-    // Representa el conjunto de Aristas (E)
     private List<RutaJSON> rutas;
 
     /**
-     * Constructor vacío: Obligatorio para la librería Jackson (O(1)).
+     * Este constructor vacío es necesario para la librería Jackson a la hora de cargar los archivos
      */
     public DatosRedJSON() {
     }
@@ -29,8 +26,6 @@ public class DatosRedJSON {
         this.paradas = paradas;
         this.rutas = rutas;
     }
-
-    // --- GETTERS Y SETTERS OBLIGATORIOS PARA JACKSON ---
 
     public Map<String, Parada> getParadas() {
         return paradas;
