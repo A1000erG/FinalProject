@@ -1,0 +1,25 @@
+/* Color de fondo base del ComboBox */
+.combo-box {
+    -fx-background-color: #2d2c2c;
+}
+
+/* Color del texto del elemento seleccionado y de la lista desplegable */
+.combo-box .list-cell {
+    -fx-text-fill: white;
+}
+
+/* Color del "Prompt Text" (El texto de Origen, Destino, Criterio antes de seleccionar) */
+.combo-box {
+    -fx-prompt-text-fill: derive(white, -30%); /* Un blanco un poco más oscuro */
+}
+
+/* Color de fondo de la lista cuando se despliega */
+.combo-box-popup .list-view {
+    -fx-background-color: #2d2c2c;
+}
+
+/* Cambiar el color cuando pasas el mouse por una opción */
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: #2d2c2c;
+    -fx-text-fill: white;
+}
