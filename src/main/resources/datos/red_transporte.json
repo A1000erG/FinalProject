@@ -3,8 +3,8 @@
     "P-005" : {
       "id" : "P-005",
       "nombre" : "E",
-      "coordX" : 81.0,
-      "coordY" : 24.0
+      "coordX" : 700.0,
+      "coordY" : 120.0
     },
     "P-006" : {
       "id" : "P-006",
@@ -15,13 +15,13 @@
     "P-001" : {
       "id" : "P-001",
       "nombre" : "A",
-      "coordX" : 23.0,
+      "coordX" : 432.0,
       "coordY" : 34.0
     },
     "P-002" : {
       "id" : "P-002",
       "nombre" : "B",
-      "coordX" : 45.0,
+      "coordX" : 450.0,
       "coordY" : 67.0
     },
     "P-003" : {

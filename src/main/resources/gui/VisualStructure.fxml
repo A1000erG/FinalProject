@@ -43,13 +43,13 @@
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="btnSalir" layoutX="71.0" layoutY="584.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="169.0" style="-fx-background-color: #2d2c2c;" text="Salir" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="15.0">
+                        <Button fx:id="btnSalir" layoutX="71.0" layoutY="584.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="169.0" style="-fx-background-color: #2d2c2c;" text="Salir" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="15.0" onMouseClicked="#onSalirClick">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </Button>
                         <Line endX="100.0" fill="WHITE" layoutX="156.0" layoutY="606.0" startX="-100.0" stroke="WHITE" AnchorPane.bottomAnchor="113.5" />
-                        <Button fx:id="btnCrear" layoutX="66.0" layoutY="473.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="169.0" style="-fx-background-color: #4caf72;" text="Crear" textAlignment="CENTER" textFill="WHITE">
+                        <Button fx:id="btnCrear" layoutX="66.0" layoutY="473.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="169.0" style="-fx-background-color: #4caf72;" text="Crear" textAlignment="CENTER" textFill="WHITE" onMouseClicked="#onCrearParadaClick">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>

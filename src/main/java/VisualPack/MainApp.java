@@ -18,8 +18,8 @@ public class MainApp extends Application {
         escenarioPrincipal.setTitle("Sistema de Gestión de Rutas de Transporte Público - PUCMM");
         escenarioPrincipal.setScene(escena);
 
-        escenarioPrincipal.setMinWidth(1000);
-        escenarioPrincipal.setMinHeight(700);
+        escenarioPrincipal.setMinWidth(1200);
+        escenarioPrincipal.setMinHeight(720);
 
         escenarioPrincipal.show();
     }
