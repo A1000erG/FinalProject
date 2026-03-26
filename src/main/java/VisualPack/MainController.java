@@ -172,7 +172,10 @@ public class MainController {
 
             System.out.println("Doble clic detectado en coordenadas: X=" + x + ", Y=" + y);
             mostrarPanelFlotante("Agregar Parada");
+        }else if(event.getClickCount() == 1 && event.getTarget() == panelGrafo){
+            resetearSeleccion();
         }
+
     }
 
     private void configurarEventoEnterRuta() {
