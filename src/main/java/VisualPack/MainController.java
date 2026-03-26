@@ -49,13 +49,58 @@ public class MainController {
         this.visualizador = new GrafoVisualizer(panelGrafo);
         cargarDatos();
 
-        List<Parada> listaParadas = new ArrayList<>(mapaParadas.values());
-        visualizador.dibujarGrafo(grafo,listaParadas);
+        //List<Parada> listaParadas = new ArrayList<>(mapaParadas.values());
+        //visualizador.dibujarGrafo(grafo,listaParadas);
+        this.visualizador.dibujarGrafo(grafo, new ArrayList<>(mapaParadas.values()), parada->{
+            gestionarSeleccionDeNodo(parada);
+        });
         cmbCriterio.getItems().addAll(Pond.values());
 
         configurarEventoEnterRuta();
     }
 
+    private void gestionarSeleccionDeNodo(Parada parada){
+        if(paradaSeleccionada1 == null){
+            paradaSeleccionada1=parada;
+            actualizarColorNodo(parada,true);
+        }else if(paradaSeleccionada2 == null && !parada.equals(paradaSeleccionada1)){
+            paradaSeleccionada2=parada;
+            actualizarColorNodo(parada,true);
+
+            //Ejecución automática de Dijkstra por tiempo
+            cmbOrigen.setValue(paradaSeleccionada1);
+            cmbDestino.setValue(paradaSeleccionada2);
+            cmbCriterio.setValue(Pond.TIEMPO);
+            ejecutarAlgoritmoRuta();
+
+            //resetear selección después de un tiempo
+            resetearSeleccion();
+        }
+    }
+
+    private void resetearSeleccion(){
+        // Apagar visualmente ambos nodos antes de limpiar las variables
+        actualizarColorNodo(paradaSeleccionada1, false);
+        actualizarColorNodo(paradaSeleccionada2, false);
+
+        // Limpiar variables de estado
+        paradaSeleccionada1 = null;
+        paradaSeleccionada2 = null;
+    }
+    private void actualizarColorNodo(Parada p, boolean seleccionado){
+        if (p == null) return;
+
+        //Obtener la referencia al mapa de nodos visuales
+        Map<Parada, NodoVisual> nodos = visualizador.getMapaNodosVisuales();
+
+        //Buscar el NodoVisual correspondiente a la Parada (O(1))
+        NodoVisual nodoV = nodos.get(p);
+
+        //Si existe, actualizar su propiedad visual
+        if (nodoV != null) {
+            nodoV.setSeleccionado(seleccionado);
+        }
+    }
     @FXML
     private void onGuardarClick() {
         System.out.println("Guardando datos de la red...");

@@ -19,16 +19,21 @@ public class GrafoVisualizer {
         this.mapaNodosVisuales = new HashMap<>();
     }
 
+    public Map<Parada,NodoVisual> getMapaNodosVisuales(){
+        return this.mapaNodosVisuales;
+    }
+
     /**
      * Dibuja todo el grafo en el Pane.
      *
      */
-    public void dibujarGrafo(GrafoTransporte grafo, List<Parada> todasLasParadas) {
+    public void dibujarGrafo(GrafoTransporte grafo, List<Parada> todasLasParadas, NodoVisual.OnNodeSelectedListener listener) {
         lienzo.getChildren().clear();
         mapaNodosVisuales.clear();
 
         for (Parada p : todasLasParadas) {
             NodoVisual nodoV = new NodoVisual(p);
+            nodoV.configurarEventos(listener);
             mapaNodosVisuales.put(p, nodoV);
         }
 

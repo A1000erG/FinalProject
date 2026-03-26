@@ -19,20 +19,26 @@ public class RutaVisual extends Group {
 
     public RutaVisual(Ruta rutaLogica, NodoVisual origen, NodoVisual destino) {
         this.rutaLogica = rutaLogica;
+        this.linea = new Line();
 
+        this.linea.startXProperty().bind(origen.layoutXProperty().add(20));
+        this.linea.startYProperty().bind(origen.layoutYProperty().add(20));
+        this.linea.endXProperty().bind(destino.layoutXProperty().add(20));
+        this.linea.endYProperty().bind(destino.layoutXProperty().add(20));
         // Coordenadas centrales de los nodos
-        double startX = origen.getLayoutX() + 20; // + radio
+/*      double startX = origen.getLayoutX() + 20; // + radio
         double startY = origen.getLayoutY() + 20;
         double endX = destino.getLayoutX() + 20;
         double endY = destino.getLayoutY() + 20;
+*/
 
         // 1. Crear la línea conectora
-        this.linea = new Line(startX, startY, endX, endY);
+       // this.linea = new Line(startX, startY, endX, endY);
         this.linea.setStrokeWidth(2);
         this.linea.setStroke(Color.BLACK);
 
         // Crear la punta de flecha (Triángulo)
-        this.flecha = crearPuntaDeFlecha(startX, startY, endX, endY);
+        this.flecha = new Polygon(0,0,-10,-5,-10,5);
 
         this.getChildren().addAll(linea, flecha);
     }

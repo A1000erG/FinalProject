@@ -12,6 +12,8 @@ import javafx.scene.text.Text;
  */
 public class NodoVisual extends StackPane {
 
+    private double mouseAnclaX;
+    private double mouseAnclaY;
     private final Parada paradaLogica;
     private final Circle circulo;
 
@@ -38,6 +40,34 @@ public class NodoVisual extends StackPane {
         return paradaLogica;
     }
 
+    public interface OnNodeSelectedListener{
+        void onSelected(Parada parada);
+    }
+
+    public void configurarEventos(OnNodeSelectedListener listener){
+        //Lógica para arrastrar
+        this.setOnMousePressed(event->{
+            mouseAnclaX = event.getX();
+            mouseAnclaY = event.getY();
+        });
+
+        this.setOnMouseDragged(event->{
+            //Esto es para actualizar la posición del StackPane
+            this.setLayoutX(this.getLayoutX()+event.getX()-mouseAnclaX);
+            this.setLayoutY(this.getLayoutY()+event.getY()-mouseAnclaY);
+
+            //Actualizar las coordenadas eb el objeto lógico
+            this.paradaLogica.setCoordX(this.getLayoutX()+20);
+            this.paradaLogica.setCoordY(this.getLayoutY()+20);
+        });
+
+        //Lógica para la selección
+        this.setOnMouseClicked(event->{
+            if(event.getClickCount()==1){
+                listener.onSelected(this.paradaLogica);
+            }
+        });
+    }
     // Métodos para cambiar colores al seleccionar (verde) o en ruta óptima (naranja)
     public void setSeleccionado(boolean seleccionado) {
         circulo.setFill(seleccionado ? Color.web("#4caf50") : Color.web("#2b3030"));
