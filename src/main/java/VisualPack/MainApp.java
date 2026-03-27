@@ -20,7 +20,7 @@ public class MainApp extends Application {
         escenarioPrincipal.setScene(escena);
 
         //Esto es para que la pantalla no se rompa
-        escenarioPrincipal.setMinWidth(1000);
+        escenarioPrincipal.setMinWidth(1200);
         escenarioPrincipal.setMinHeight(700);
 
         escenarioPrincipal.show();

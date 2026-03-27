@@ -3,26 +3,26 @@
     "P-005" : {
       "id" : "P-005",
       "nombre" : "E",
-      "coordX" : 81.0,
-      "coordY" : 24.0
+      "coordX" : 450.0,
+      "coordY" : 120.0
     },
     "P-006" : {
       "id" : "P-006",
       "nombre" : "P",
-      "coordX" : 23.0,
+      "coordX" : 230.0,
       "coordY" : 90.0
     },
     "P-001" : {
       "id" : "P-001",
       "nombre" : "A",
-      "coordX" : 23.0,
-      "coordY" : 34.0
+      "coordX" : 320.0,
+      "coordY" : 134.0
     },
     "P-002" : {
       "id" : "P-002",
       "nombre" : "B",
-      "coordX" : 45.0,
-      "coordY" : 67.0
+      "coordX" : 450.0,
+      "coordY" : 98.0
     },
     "P-003" : {
       "id" : "P-003",
