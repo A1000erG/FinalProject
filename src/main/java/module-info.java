@@ -5,6 +5,7 @@ module FinalProject {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.annotation;
 
+    requires java.desktop;
     opens VisualPack to javafx.fxml;
     opens LogicPack to com.fasterxml.jackson.databind;
 

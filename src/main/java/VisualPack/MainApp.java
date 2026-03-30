@@ -11,22 +11,26 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage escenarioPrincipal) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/gui/VisualStructure.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/gui/DraftVisual.fxml"));
+
         Scene escena = new Scene(fxmlLoader.load(), 1200, 720);
-        escena.getStylesheets().add(getClass().getResource("/gui/estilos.css").toExternalForm());
+        escena.getStylesheets().add(getClass().getResource("/gui/style.css").toExternalForm());
 
         //Configuración de la Ventana (Stage) como en el video
-        escenarioPrincipal.setTitle("Sistema de Gestión de Rutas de Transporte Público");
-        escenarioPrincipal.setScene(escena);
+//        escenarioPrincipal.setTitle("Sistema de Gestión de Rutas de Transporte Público");
+//        escenarioPrincipal.setScene(escena);
 
         //Esto es para que la pantalla no se rompa
         escenarioPrincipal.setMinWidth(1200);
         escenarioPrincipal.setMinHeight(700);
 
+
+        escenarioPrincipal.setTitle("");
+        escenarioPrincipal.setScene(escena);
         escenarioPrincipal.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+//    public static void main(String[] args) {
+//        launch(args);
+//    }
 }

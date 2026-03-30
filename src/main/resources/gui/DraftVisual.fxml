@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1200.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VisualPack.PruebaController">
+   <children>
+      <ScrollPane fx:id="scrollMapa" hbarPolicy="NEVER" layoutX="0.0" layoutY="0.0" prefHeight="722.0" prefWidth="1200.0" style="-fx-background: transparent;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <content>
+            <Pane id="panelGrafo" fx:id="panelGrafo" onMouseClicked="#onMapaClicked" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" prefHeight="2000.0" prefWidth="2000.0" style="-fx-background: transparent: #f5f5f5;">
+            </Pane>
+         </content>
+      </ScrollPane>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1173.0" spacing="30.0" styleClass="search-container" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <VBox alignment="CENTER_LEFT" prefHeight="107.0" prefWidth="224.0">
+               <children>
+                  <Label contentDisplay="CENTER" prefWidth="220.0" text="¿A dónde te gustaría ir">
+                     <font>
+                        <Font name="HelveticaLTStd-Roman" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="185.0" spacing="3.0">
+                     <children>
+                        <Label text="gustaría ir">
+                           <font>
+                              <Font name="HelveticaLTStd-Roman" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label text="hoy?">
+                           <font>
+                              <Font name="HelveticaLTStd-Bold" size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+               <HBox.margin>
+                  <Insets left="4.0" />
+               </HBox.margin>
+            </VBox>
+            <AnchorPane>
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="107.0" prefWidth="421.0" spacing="7.0" styleClass="cuadrado-azul" />
+                  <VBox alignment="CENTER" prefHeight="77.0" prefWidth="17.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="15.0">
+                     <children>
+                        <Circle radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Line endX="-100.14715576171875" endY="31.29287338256836" startX="-100.0" />
+                        <Circle radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER_LEFT" prefHeight="77.0" prefWidth="332.0" spacing="5.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="27.0">
+                     <children>
+                        <ComboBox fx:id="cmbOrigen" prefHeight="28.0" prefWidth="308.0" styleClass="combo-personalizado" />
+                        <ComboBox fx:id="cmbDestino" prefHeight="28.0" prefWidth="229.0" styleClass="combo-personalizado" />
+                     </children>
+                  </VBox>
+                  <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="371.6666666666667" layoutY="35.99999999999999" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="boton-swap" AnchorPane.bottomAnchor="36.0" AnchorPane.rightAnchor="6.333333333333314">
+                     <graphic>
+                        <SVGPath content="M21 7.5L8 7.5M21 7.5L16.6667 3M21 7.5L16.6667 12 M4 16.5L17 16.5M4 16.5L8.33333 21M4 16.5L8.33333 12" fill="WHITE" styleClass="svg-path" />
+                     </graphic>
+                  </Button>
+               </children>
+            </AnchorPane>
+            <VBox alignment="CENTER" prefHeight="107.0" prefWidth="375.0" spacing="10.0" styleClass="rad">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="332.0" spacing="75.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" styleClass="radio-minimal" text="Tiempo">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="opcionesRuta" />
+                           </toggleGroup>
+                           <font>
+                              <Font name="HelveticaLTStd-Roman" size="14.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" styleClass="radio-minimal" text="Distancia" toggleGroup="$opcionesRuta">
+                           <font>
+                              <Font name="HelveticaLTStd-Roman" size="14.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="305.0" spacing="40.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" selected="true" styleClass="radio-minimal" text="Menos Costo" toggleGroup="$opcionesRuta">
+                           <font>
+                              <Font name="HelveticaLTStd-Roman" size="14.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" styleClass="radio-minimal" text="Menos Transbordo" toggleGroup="$opcionesRuta">
+                           <font>
+                              <Font name="HelveticaLTStd-Roman" size="14.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="40.0" prefWidth="380.0" styleClass="boton-buscar" text="Buscar" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
