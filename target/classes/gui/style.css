@@ -1,3 +1,16 @@
+/* --- VARIABLES GLOBALES --- */
+.root {
+    -color-primario: #eb8e83;       /* Naranja suave */
+    -color-primario-dark: #d67d73;
+    -color-fondo: #f5f5f5;
+    -color-texto: #333333;
+    -color-borde: #dcdcdc;
+    -color-negro-boton: #1e1e1e;
+}
+
+/*==========================================
+          CONTENEDORES PRINCIPALES
+==========================================*/
 /* Para la cápsula blanca */
 .search-container {
     -fx-background-color: white;
@@ -7,14 +20,13 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);
 }
 
-#panelGrafo {
-    -fx-background-color: #f5f5f5;
-    -fx-background: #f5f5f5;
+#panelGrafo, .scroll-pane {
+    -fx-background-color: -color-fondo;
+    -fx-background: -color-fondo;
     -fx-border-color: transparent;
 }
 
-
-/* Quita el borde de enfoque de todos los contenedores principales */
+/* Limpieza de bordes de enfoque */
 .scroll-pane, .scroll-pane > .viewport, #panelGrafo {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -33,6 +45,23 @@
     -fx-spacing: 10;
 }
 
+/*==========================================
+       CAMPOS Y COMBOS (ESTILO LINEA)
+==========================================*/
+.campo-minimalista {
+    -fx-background-color: transparent;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: #4a4a4a;
+    -fx-prompt-text-fill: #afafaf;
+}
+
+/* Cuando el usuario hace clic o escribe */
+.campo-minimalista:focused {
+    -fx-border-color: -color-primario;
+    -fx-border-width: 0 0 2 0;
+}
+
 .combo-personalizado {
     -fx-background-color: white;
     -fx-background-radius: 15;
@@ -40,6 +69,7 @@
     -fx-min-height: 35;
     -fx-border-color: transparent;
 }
+
 
 /* Estilo para la lista desplegable del ComboBox */
 .combo-box .list-view {
@@ -57,13 +87,24 @@
 }
 
 .combo-box .list-cell:hover {
-    -fx-background-color: #f0f0f0; /* Gris muy clarito al pasar el mouse */
+    -fx-background-color: #f0f0f0;
 }
 
-/* Quitar la flecha gris de los combo */
-.combo-personalizado .arrow-button {
+.combo-personalizado .arrow-button,
+.campo-minimalista .arrow-button {
     -fx-background-color: transparent;
 }
+
+/* Color de la flechita para que combine con tu panel */
+.campo-minimalista .arrow {
+    -fx-background-color: -color-primario;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+/*==========================================
+       CAMPOS Y COMBOS (ESTILO LINEA)
+==========================================*/
+
 
 .boton-swap {
     -fx-background-color: #eb8e83; /* Naranja suave traslúcido */
@@ -182,4 +223,50 @@
     -fx-background-color: #000000; /* Negro puro al presionar */
     -fx-translate-y: 2; /* Pequeño movimiento hacia abajo */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); /* Sombra más pequeña */
+}
+
+/* Estilo para los campos de texto y combos tipo "línea" */
+
+
+
+.campo-minimalista .text {
+    -fx-prompt-text-fill: #B0B0B0;
+}
+
+/* Para que el ComboBox no tenga ese botón gris de la derecha */
+.campo-minimalista .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 5 0 5 0;
+    -fx-text-fill: #4a4a4a;
+}
+
+
+
+/* Estilo para las etiquetas de título dentro del panel */
+.label-titulo-campo {
+    -fx-text-fill: #5b5b5b; /* Un gris oscuro elegante */
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+
+
+.boton-agregar-ruta {
+    -fx-background-color: #eb8e83;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.boton-agregar-ruta:hover {
+    -fx-background-color: #d67d73; /* Un poco más oscuro al pasar el mouse */
+}
+
+/* O si prefieres un color gris clarito fijo */
+.text-field:focused, .text-field {
+    -fx-prompt-text-fill: #A0A0A0;
 }

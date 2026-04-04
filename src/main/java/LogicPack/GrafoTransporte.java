@@ -47,4 +47,26 @@ public class GrafoTransporte {
     public List<Ruta> obtenerVecinos(Parada p){
         return adyacencias.getOrDefault(p, new java.util.ArrayList<>());
     }
+
+
+    public void conectar(Parada origen, Parada destino, Map<Pond, Double> pesosMap) {
+        // 1. Verificamos que ambas paradas existan en el grafo
+        if (adyacencias.containsKey(origen) && adyacencias.containsKey(destino)) {
+
+            // 2. Creamos el objeto Ruta apuntando al destino
+            Ruta nuevaRuta = new Ruta(destino);
+
+            // 3. Pasamos todos los pesos del mapa (que viene del JSON o la UI) al objeto Ruta
+            if (pesosMap != null) {
+                pesosMap.forEach((tipo, valor) -> {
+                    nuevaRuta.setPond(tipo, valor);
+                });
+            }
+
+            // 4. Usamos tu función existente para guardarla en la lista de adyacencia
+            this.agregarRuta(origen, nuevaRuta);
+        } else {
+            System.err.println("Error: No se pudo conectar. Una de las paradas no existe en el grafo.");
+        }
+    }
 }
