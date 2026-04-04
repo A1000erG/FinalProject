@@ -130,11 +130,12 @@
 .boton-buscar:pressed {
     -fx-background-color: black;
     -fx-translate-y: 2;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
 
 .boton-swap {
     -fx-background-color: -color-primario;
-    -fx-background-radius: 20;
+    -fx-background-radius: 50;
     -fx-min-width: 35;
     -fx-min-height: 35;
     -fx-pref-width: 35;

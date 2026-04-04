@@ -1,5 +1,11 @@
 {
   "paradas" : {
+    "P12" : {
+      "id" : "P12",
+      "nombre" : "KOBKH",
+      "coordX" : 1124.0,
+      "coordY" : 430.6666666666667
+    },
     "P11" : {
       "id" : "P11",
       "nombre" : "Parada E",
@@ -68,88 +74,95 @@
     }
   },
   "rutas" : [ {
+    "idOrigen" : "P12",
+    "idDestino" : "P-006",
+    "pesos" : {
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
+    }
+  }, {
     "idOrigen" : "P11",
     "idDestino" : "P8",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P-005",
     "idDestino" : "P-002",
     "pesos" : {
-      "DISTANCIA" : 87.0,
       "TRANSBORDOS" : 1.0,
-      "COSTO" : 23.0,
-      "TIEMPO" : 23.0
+      "DISTANCIA" : 87.0,
+      "TIEMPO" : 23.0,
+      "COSTO" : 23.0
     }
   }, {
     "idOrigen" : "P-005",
     "idDestino" : "P-004",
     "pesos" : {
-      "DISTANCIA" : 15.0,
       "TRANSBORDOS" : 34.0,
-      "COSTO" : 90.0,
-      "TIEMPO" : 34.0
+      "DISTANCIA" : 15.0,
+      "TIEMPO" : 34.0,
+      "COSTO" : 90.0
     }
   }, {
     "idOrigen" : "P-001",
     "idDestino" : "P-005",
     "pesos" : {
-      "DISTANCIA" : 8.0,
       "TRANSBORDOS" : 2.0,
-      "COSTO" : -10.0,
-      "TIEMPO" : 23.0
+      "DISTANCIA" : 8.0,
+      "TIEMPO" : 23.0,
+      "COSTO" : -10.0
     }
   }, {
     "idOrigen" : "P-002",
     "idDestino" : "P-001",
     "pesos" : {
-      "DISTANCIA" : 18.0,
       "TRANSBORDOS" : 6.0,
-      "COSTO" : 30.0,
-      "TIEMPO" : 21.0
+      "DISTANCIA" : 18.0,
+      "TIEMPO" : 21.0,
+      "COSTO" : 30.0
     }
   }, {
     "idOrigen" : "P-002",
     "idDestino" : "P-004",
     "pesos" : {
-      "DISTANCIA" : 5.0,
       "TRANSBORDOS" : 1.0,
-      "COSTO" : -13.0,
-      "TIEMPO" : 10.0
+      "DISTANCIA" : 5.0,
+      "TIEMPO" : 10.0,
+      "COSTO" : -13.0
     }
   }, {
     "idOrigen" : "P9",
     "idDestino" : "P8",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P-003",
     "idDestino" : "P-005",
     "pesos" : {
-      "DISTANCIA" : 34.0,
       "TRANSBORDOS" : 5.0,
-      "COSTO" : 17.0,
-      "TIEMPO" : 56.0
+      "DISTANCIA" : 34.0,
+      "TIEMPO" : 56.0,
+      "COSTO" : 17.0
     }
   }, {
     "idOrigen" : "P-004",
     "idDestino" : "P-003",
     "pesos" : {
-      "DISTANCIA" : 25.0,
       "TRANSBORDOS" : 3.0,
-      "COSTO" : 46.0,
-      "TIEMPO" : 34.0
+      "DISTANCIA" : 25.0,
+      "TIEMPO" : 34.0,
+      "COSTO" : 46.0
     }
   }, {
     "idOrigen" : "P10",
     "idDestino" : "P-004",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   } ]
 }
