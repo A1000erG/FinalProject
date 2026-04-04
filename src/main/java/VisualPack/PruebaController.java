@@ -287,14 +287,16 @@ public class PruebaController {
 
     @FXML
     private void onCancelarEdicion() {
-        if (marcadorTemporal != null) {
-            panelGrafo.getChildren().remove(marcadorTemporal);
-            marcadorTemporal = null;
-        }
-        if (flechaPrevia != null) {
-            panelGrafo.getChildren().remove(flechaPrevia);
-            flechaPrevia = null;
-        }
+        // Limpia las líneas y flechas guardadas en la lista de rastreo
+        panelGrafo.getChildren().removeAll(previsualizacionesTemporales);
+        previsualizacionesTemporales.clear();
+
+        // Limpia la previsualización principal (la del primer ComboBox)
+        if (lineaPrevia != null) panelGrafo.getChildren().remove(lineaPrevia);
+        if (flechaPrevia != null) panelGrafo.getChildren().remove(flechaPrevia);
+        if (marcadorTemporal != null) panelGrafo.getChildren().remove(marcadorTemporal);
+
+        vboxRutas.getChildren().clear();
         animarPanel(false);
     }
 
@@ -302,11 +304,13 @@ public class PruebaController {
 
     @FXML private VBox vboxRutas;
 
-    @FXML
-    private void agregarNuevaFilaRuta() {
+    List<javafx.scene.Node> previsualizacionesTemporales = new java.util.ArrayList<>();
+    @FXML private void agregarNuevaFilaRuta() {
 
         System.out.println("Intentando agregar fila...");
 
+        final Line[] miLineaLocal = {null};
+        final javafx.scene.shape.Polygon[] miFlechaLocal = {null};
 
         // 1. VALIDACIÓN CON MENSAJE VISUAL
         if (!vboxRutas.getChildren().isEmpty()) {
@@ -336,19 +340,43 @@ public class PruebaController {
         // 2. ESCUCHADOR DE LA COMBOBOX (DIBUJO INDEPENDIENTE)
         comboConexion.valueProperty().addListener((obs, viejo, nuevo) -> {
             if (nuevo != null) {
-                Parada destino = mapaParadas.get(nuevo);
+                Parada destino = mapaParadas.values().stream()
+                        .filter(p -> p.getNombre().equals(nuevo))
+                        .findFirst().orElse(null);
                 if (destino != null) {
-                    // Si esta fila ya tenía una flecha, la borramos antes de poner la nueva
-                    if (miFlechaPersonal[0] != null) {
-                        panelGrafo.getChildren().remove(miFlechaPersonal[0]);
-                    }
+                    if (miLineaLocal[0] != null) panelGrafo.getChildren().remove(miLineaLocal[0]);
+                    if (miFlechaLocal[0] != null) panelGrafo.getChildren().remove(miFlechaLocal[0]);
 
-                    // Dibujamos la nueva y la guardamos EN LA FILA, no en la variable global
-                    // Nota: Asegúrate que dibujarLineaTemporal devuelva el Group o Line creado
-                    dibujarLineaTemporal(tempX, tempY, destino);
+                    double xDest = destino.getCoordX();
+                    double yDest = destino.getCoordY();
+
+                    double angulo = Math.atan2(yDest - tempY, xDest - tempX);
+                    double offsetLinea = 30.0;
+
+                    double xFinalAjustado = xDest - Math.cos(angulo) * offsetLinea;
+                    double yFinalAjustado = yDest - Math.sin(angulo) * offsetLinea;
+
+                    // Línea punteada
+                    miLineaLocal[0] = new Line(tempX, tempY, xFinalAjustado, yFinalAjustado);
+                    miLineaLocal[0].setStroke(javafx.scene.paint.Color.web("#4A4A4A"));
+                    miLineaLocal[0].setStrokeWidth(2.5);
+                    miLineaLocal[0].getStrokeDashArray().addAll(10.0, 5.0);
+                    miLineaLocal[0].setOpacity(0.8);
+                    miLineaLocal[0].setViewOrder(1.0);
+
+                    // Flecha punteada
+                    miFlechaLocal[0] = crearPuntaFlecha(tempX, tempY, xDest, yDest);
+                    miFlechaLocal[0].setOpacity(0.9);
+                    miFlechaLocal[0].setViewOrder(0.0);
+
+                    previsualizacionesTemporales.add(miLineaLocal[0]);
+                    previsualizacionesTemporales.add(miFlechaLocal[0]);
+                    panelGrafo.getChildren().addAll(miLineaLocal[0], miFlechaLocal[0]);
                 }
             }
         });
+
+
 
         // 4. TEXTFIELDS (TIEMPO Y COSTO)
         TextField txtT = new TextField();
@@ -363,13 +391,50 @@ public class PruebaController {
         txtC.getStyleClass().add("campo-minimalista");
         //configurarValidacionNumerica(txtC);
 
-        Button btnBorrar = new Button("✕");
-        //btnBorrar.setStyle("-fx-background-color: transparent; -fx-text-fill: #ff5f56;");
-        btnBorrar.setOnAction(e -> {
-            vboxRutas.getChildren().remove(filaRuta);
-            // Opcional: borrar la flecha temporal si se elimina la fila
-            if (flechaPrevia != null) panelGrafo.getChildren().remove(flechaPrevia);
+        // 3. BOTÓN BORRAR (También debe limpiar su previsualización)
+        StackPane btnBorrar = new StackPane();
+        btnBorrar.setPrefSize(30, 30);
+        btnBorrar.setMinSize(30, 30);
+        btnBorrar.setCursor(javafx.scene.Cursor.HAND);
+
+        // Fondo
+        javafx.scene.shape.Circle circuloFondo = new javafx.scene.shape.Circle(15);
+        circuloFondo.setFill(javafx.scene.paint.Color.web("#f0f0f0"));
+
+        javafx.scene.shape.Polygon iconoX = new javafx.scene.shape.Polygon();
+        // Coordenadas para dibujar una 'X'
+        iconoX.getPoints().addAll(new Double[]{
+                5.0, 5.0,   2.5, 7.5,   7.5, 12.5,  2.5, 17.5,
+                5.0, 20.0,  10.0, 15.0, 15.0, 20.0, 17.5, 17.5,
+                12.5, 12.5, 17.5, 7.5,  15.0, 5.0,  10.0, 10.0
         });
+        iconoX.setFill(javafx.scene.paint.Color.web("#999999"));
+        iconoX.setScaleX(0.6);
+        iconoX.setScaleY(0.6);
+
+        btnBorrar.setOnMouseEntered(e -> {
+            circuloFondo.setFill(javafx.scene.paint.Color.web("#ffcccc")); // Fondo rosa
+            iconoX.setFill(javafx.scene.paint.Color.web("#ff5555"));     // Icono rojo
+        });
+        btnBorrar.setOnMouseExited(e -> {
+            circuloFondo.setFill(javafx.scene.paint.Color.web("#f0f0f0")); // Fondo gris
+            iconoX.setFill(javafx.scene.paint.Color.web("#999999"));     // Icono gris
+        });
+
+        btnBorrar.setOnMouseClicked(e -> {
+            vboxRutas.getChildren().remove(filaRuta);
+            if (miLineaLocal[0] != null) {
+                panelGrafo.getChildren().remove(miLineaLocal[0]);
+                previsualizacionesTemporales.remove(miLineaLocal[0]); // Quitar del rastreo
+            }
+            if (miFlechaLocal[0] != null) {
+                panelGrafo.getChildren().remove(miFlechaLocal[0]);
+                previsualizacionesTemporales.remove(miFlechaLocal[0]); // Quitar del rastreo
+            }
+        });
+
+        btnBorrar.getChildren().addAll(circuloFondo, iconoX);
+        filaRuta.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
         filaRuta.getChildren().addAll(comboConexion, txtT, txtC, btnBorrar);
         vboxRutas.getChildren().add(filaRuta);
@@ -545,16 +610,16 @@ public class PruebaController {
         double angulo = Math.atan2(yDest - yOrigen, xDest - xOrigen);
         double offsetFlecha = 12.0;
 
-        double compensacionGrosor = 2.0;
-        double offsetLinea = offsetFlecha + compensacionGrosor;
+//        double compensacionGrosor = 2.0;
+//        double offsetLinea = offsetFlecha + compensacionGrosor;
 
-        double finalX = xDest - Math.cos(angulo) * offsetLinea;
-        double finalY = yDest - Math.sin(angulo) * offsetLinea;
+        double finalX = xDest - Math.cos(angulo) * offsetFlecha;
+        double finalY = yDest - Math.sin(angulo) * offsetFlecha;
 
         lineaPrevia = new Line(xOrigen, yOrigen, finalX, finalY);
         // ESTILO ESTÉTICO
         lineaPrevia.setStroke(javafx.scene.paint.Color.web("#4A4A4A"));
-        lineaPrevia.setStrokeWidth(3);
+        lineaPrevia.setStrokeWidth(2.5);
         lineaPrevia.getStrokeDashArray().addAll(10.0, 5.0); // Línea punteada para indicar "previsualización"
         lineaPrevia.setOpacity(0.8);
         lineaPrevia.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.BUTT);
@@ -574,25 +639,40 @@ public class PruebaController {
         // Calcular el ángulo de la línea
         double angulo = Math.atan2(y2 - y1, x2 - x1);
 
+        double offsetPunta = 12.0;
+        double puntaX = x2 - Math.cos(angulo) * offsetPunta;
+        double puntaY = y2 - Math.sin(angulo) * offsetPunta;
+
+        // Calculamos las dos esquinas traseras del triángulo
+        // Usamos el ángulo + y - 150 grados para que la flecha sea "puntiaguda"
+        double anguloA = angulo + Math.toRadians(155);
+        double anguloB = angulo - Math.toRadians(155);
+
+        double xA = puntaX + Math.cos(anguloA) * radioFlecha;
+        double yA = puntaY + Math.sin(anguloA) * radioFlecha;
+
+        double xB = puntaX + Math.cos(anguloB) * radioFlecha;
+        double yB = puntaY + Math.sin(anguloB) * radioFlecha;
+
         // Crear el triángulo (punta de flecha)
         javafx.scene.shape.Polygon flecha = new javafx.scene.shape.Polygon();
         flecha.getPoints().addAll(new Double[]{
-                0.0, 0.0,
-                -radioFlecha, radioFlecha / 1.5,
-                -radioFlecha, -radioFlecha / 1.5
+                puntaX, puntaY, // Punta
+                xA, yA,         // Esquina trasera 1
+                xB, yB          // Esquina trasera 2
         });
 
         // Color y estilo (usa el mismo que la línea)
         flecha.setFill(javafx.scene.paint.Color.web("#4A4A4A"));
         //flecha.setStroke(javafx.scene.paint.Color.WHITE);
-        //flecha.setStrokeWidth(0.5);
-
-        // Rotar y posicionar la flecha al final (x2, y2)
-        flecha.setRotate(Math.toDegrees(angulo));
-
-        double offset = 12.0;
-        flecha.setLayoutX(x2 - Math.cos(angulo) * offset);
-        flecha.setLayoutY(y2 - Math.sin(angulo) * offset);
+//        //flecha.setStrokeWidth(0.5);
+//
+//        // Rotar y posicionar la flecha al final (x2, y2)
+//        flecha.setRotate(Math.toDegrees(angulo));
+//
+//        double offset = 12.0;
+//        flecha.setLayoutX(x2 - Math.cos(angulo) * offset);
+//        flecha.setLayoutY(y2 - Math.sin(angulo) * offset);
 
         return flecha;
     }

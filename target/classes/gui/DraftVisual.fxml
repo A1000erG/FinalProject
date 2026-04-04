@@ -126,15 +126,15 @@
          </children>
       </HBox>
 
-      <AnchorPane fx:id="panelEdicion" prefHeight="505.0" prefWidth="240.0" style="-fx-background-color: #ffffffee; -fx-background-radius: 20 0 0 20;" visible="true" AnchorPane.bottomAnchor="172.0" AnchorPane.rightAnchor="0.0">
+                  <AnchorPane fx:id="panelEdicion" layoutX="960.0" layoutY="60.333333333333314" prefHeight="501.0" prefWidth="251.0" style="-fx-background-color: #ffffffee; -fx-background-radius: 20 0 0 20;" visible="true" AnchorPane.bottomAnchor="154.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <Label layoutY="0.0" prefHeight="39.0" prefWidth="240.0" style="-fx-background-color: eb8e83; -fx-text-fill: white; -fx-alignment: center; -fx-background-radius: 20 0 0 0;" text="NUEVA PARADA">
+            <Label prefHeight="39.0" prefWidth="251.0" style="-fx-background-color: eb8e83; -fx-text-fill: white; -fx-alignment: center; -fx-background-radius: 20 0 0 0;" text="NUEVA PARADA">
                <font>
                   <Font name="HelveticaLTStd-Blk" size="14.0" />
                </font>
             </Label>
 
-            <VBox fx:id="vboxRutas" layoutY="38.0" prefHeight="463.0" prefWidth="240.0" spacing="12.0">
+                        <VBox fx:id="vboxRutas" layoutY="38.0" prefHeight="463.0" prefWidth="251.0" spacing="12.0">
                <padding>
                   <Insets left="15.0" right="15.0" top="10.0" />
                </padding>
@@ -146,13 +146,13 @@
                   </Label>
                   <TextField fx:id="txtNombreParada" prefHeight="40.0" prefWidth="209.0" promptText="Ej: Estación Central" style="-fx-background-radius: 10;" styleClass="campo-minimalista" stylesheets="@style.css" />
 
-                                    <Label styleClass="label-titulo-campo" text="Conectar con:" textFill="#4a4a4a">
+                                                <Label styleClass="label-titulo-campo" text="Conectar con:" textFill="#4a4a4a">
                      <font>
                         <Font name="HelveticaLTStd-Roman" size="12.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="comboConectarFijo" onAction="#agregarNuevaFilaRuta" prefHeight="40.0" prefWidth="205.0" promptText="Seleccionar parada..." style="-fx-background-radius: 10;" styleClass="campo-minimalista" stylesheets="@style.css" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                  <ComboBox fx:id="comboConectarFijo" onAction="#agregarNuevaFilaRuta" prefHeight="40.0" prefWidth="219.0" promptText="Seleccionar parada..." style="-fx-background-radius: 10;" styleClass="campo-minimalista" stylesheets="@style.css" />
+                  <HBox prefHeight="29.0" prefWidth="235.0" spacing="20.0">
                      <children>
                         <TextField fx:id="txtTiempoFijo" promptText="Tiempo (min)" styleClass="campo-minimalista" />
                         <TextField fx:id="txtCostoFijo" promptText="Costo ($$)" styleClass="campo-minimalista" />
@@ -161,18 +161,18 @@
                         <Insets left="10.0" right="10.0" />
                      </padding>
                   </HBox>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="238.0" prefWidth="209.0" VBox.vgrow="ALWAYS">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="142.0" prefWidth="231.0" VBox.vgrow="ALWAYS">
                      <content>
-                        <VBox fx:id="vboxRutas" prefHeight="125.0" prefWidth="207.0" spacing="10.0" />
+                        <VBox fx:id="vboxRutas" prefHeight="138.0" prefWidth="225.0" spacing="10.0" />
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#agregarNuevaFilaRuta" prefHeight="25.0" prefWidth="209.0" styleClass="boton-agregar-ruta" text="AGREGAR RUTA">
+                  <Button mnemonicParsing="false" onAction="#agregarNuevaFilaRuta" prefHeight="28.0" prefWidth="235.0" styleClass="boton-agregar-ruta" text="AGREGAR RUTA">
                      <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                      </VBox.margin>
                   </Button>
 
-                                                                        <HBox alignment="TOP_CENTER" prefHeight="33.0" prefWidth="209.0" spacing="20.0">
+                                                                                    <HBox alignment="TOP_CENTER" prefHeight="33.0" prefWidth="209.0" spacing="20.0">
                      <children>
                         <Button onAction="#onCancelarEdicion" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: #ff5f56; -fx-background-radius: 50; -fx-text-fill: white;" text="✘" />
                         <Button onAction="#confirmarNuevaParada" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: #27c93f; -fx-background-radius: 50; -fx-text-fill: white;" text="✔" />
