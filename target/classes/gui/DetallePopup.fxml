@@ -19,7 +19,7 @@
 
         <Button fx:id="btnDetallesPopup" mnemonicParsing="false" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-background-radius: 12; -fx-cursor: hand;" text="DETALLES">
             <font>
-                <Font name="System Bold" size="10.0" />
+                <Font name="HelveticaLTStd-Bold" size="10.0" />
             </font>
         </Button>
     </children>

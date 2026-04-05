@@ -38,6 +38,7 @@ public class GrafoTransporte {
 
     //public void eliminarParada(Parada origen, Parada destino){}
     public boolean eliminarParada(Parada paradaAEliminar) {
+
         // 1. Validaciones iniciales: O(1)
         if (paradaAEliminar == null || !adyacencias.containsKey(paradaAEliminar)) {
             System.out.println("La parada no existe en la red.");
@@ -117,5 +118,14 @@ public class GrafoTransporte {
     // Retorna la todas las tutas que tiene esa parada
     public List<Ruta> obtenerVecinos(Parada p){
         return adyacencias.getOrDefault(p, new java.util.ArrayList<>());
+    }
+
+    public void conectar(Parada origen, Parada destino, Map<Pond, Double> pesos) {
+        if (adyacencias.containsKey(origen) && adyacencias.containsKey(destino)) {
+            Ruta nuevaRuta = new Ruta(destino, pesos);
+            adyacencias.get(origen).add(nuevaRuta);
+        } else {
+            System.err.println("Error: Una de las paradas no existe en el grafo.");
+        }
     }
 }

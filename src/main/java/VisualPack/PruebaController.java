@@ -1,5 +1,7 @@
 package VisualPack;
 
+import LogicPack.Pond;
+import LogicPack.Ruta;
 import PersistancePack.DatosRedJSON;
 import PersistancePack.RutaJSON;
 import javafx.fxml.FXML;
@@ -30,6 +32,7 @@ public class PruebaController {
     @FXML private ScrollPane scrollMapa;     // Contenedor para mover el mapa
     @FXML private AnchorPane panelEdicion;   // El menú lateral deslizable
     @FXML private TextField txtNombreParada; // Campo para el nombre de la parada
+    @FXML private AnchorPane contenedorLateral; // El espacio físico en la derecha
 
     // --- MOTOR LÓGICO Y PERSISTENCIA ---
     private GrafoTransporte grafo = new GrafoTransporte();
@@ -689,6 +692,25 @@ public class PruebaController {
     }
 
 
+    private void animarEntradaPanel(javafx.scene.Node panel, boolean mostrar) {
+        panel.setVisible(true);
+
+        double posicionOculto = 350;
+        double posicionVisible = 0;
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(300), panel);
+
+        if (mostrar) {
+            panel.setTranslateX(posicionOculto);
+            tt.setToX(posicionVisible);
+        } else {
+            tt.setToX(posicionOculto);
+            tt.setOnFinished(e -> panel.setVisible(false));
+        }
+
+        tt.play();
+    }
+
     // ==========================================
     //                 DETALLES
     // ==========================================
@@ -704,8 +726,8 @@ public class PruebaController {
             if (lbl != null) lbl.setText(p.getNombre());
             if (btn != null) {
                 btn.setOnAction(e -> {
-                    System.out.println("Abriendo panel detallado de: " + p.getNombre());
-                    // Aquí podrías llamar a otra función para mostrar info del grafo
+                    panelGrafo.getChildren().removeIf(n -> n.getStyleClass().contains("popup-info"));
+                    cargarPanelDetalle(p);
                 });
             }
 
@@ -719,6 +741,126 @@ public class PruebaController {
 
         } catch (IOException e) {
             System.err.println("No se pudo cargar DetallePopup.fxml: " + e.getMessage());
+        }
+    }
+
+    private void poblarRutasEnDetalle(Parada p, VBox contenedor) {
+        contenedor.getChildren().clear();
+        Parada paradaReal = mapaParadas.get(p.getId());
+
+        List<Ruta> vecinos = grafo.obtenerVecinos(paradaReal != null ? paradaReal : p);
+
+        if (vecinos.isEmpty()) {
+            Label lblSencillo = new Label("No hay conexiones salientes.");
+            lblSencillo.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+            contenedor.getChildren().add(lblSencillo);
+            return;
+        }
+
+        for (Ruta r : vecinos) {
+            HBox fila = new HBox(10);
+            fila.setStyle("-fx-padding: 5; -fx-border-color: #f0f0f0; -fx-border-width: 0 0 1 0;");
+
+            Label lblDestino = new Label("A: " + r.getDestino().getNombre());
+            Label lblTiempo = new Label(r.getPond(Pond.TIEMPO) + " min");
+            Label lblCosto = new Label("$" + r.getPond(Pond.COSTO));
+
+            lblDestino.setPrefWidth(100);
+            fila.getChildren().addAll(lblDestino, lblTiempo, lblCosto);
+            contenedor.getChildren().add(fila);
+        }
+    }
+
+    private void cargarPanelDetalle(Parada p) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/DetalleParada.fxml"));
+            AnchorPane view = loader.load();
+
+            VBox contenedorRutas = (VBox) view.lookup("#vboxRutasDetalle");
+
+            if (contenedorRutas == null) {
+                // Buscamos el ScrollPane primero (que es más fácil de hallar)
+                ScrollPane scroll = (ScrollPane) view.lookup("ScrollPane");
+                if (scroll != null && scroll.getContent() instanceof VBox) {
+                    contenedorRutas = (VBox) scroll.getContent();
+                }
+            }
+
+            if (contenedorRutas != null) {
+                poblarRutasEnDetalle(p, contenedorRutas);
+            } else {
+                System.err.println("ERROR CRÍTICO: No se halló el contenedor ni manualmente.");
+            }
+
+            TextField txtNombre = (TextField) view.lookup("#txtNombreDetalle");
+            if (txtNombre != null) txtNombre.setText(p.getNombre());
+
+            Button btnEliminar = (Button) view.lookup("#btnEliminar");
+            btnEliminar.setOnAction(e -> eliminarParada(p));
+
+            Button btnCerrar = (Button) view.lookup("#btnCerrarDetalle");
+            if (btnCerrar != null) btnCerrar.setOnAction(e -> animarEntradaPanel(view, false));
+
+            if (contenedorLateral != null) {
+                contenedorLateral.setMouseTransparent(false); // Para que responda a clics
+                contenedorLateral.getChildren().setAll(view); // Metemos el panel de detalle dentro del hueco
+
+                // Alineamos el panel a la derecha del contenedor por si acaso
+                AnchorPane.setRightAnchor(view, 0.0);
+                AnchorPane.setTopAnchor(view, 0.0);
+                AnchorPane.setBottomAnchor(view, 0.0);
+
+                animarEntradaPanel(view, true);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void eliminarParada(Parada p) {
+        // 1. Intentar eliminar del motor lógico
+        boolean exito = grafo.eliminarParada(p);
+
+        if (exito) {
+            // Eliminar del mapa de paradas (Persistencia)
+            mapaParadas.remove(p.getId());
+
+            // Limpiar el mapa visual (Círculos y Líneas)
+            refrescarMapaVisual();
+
+            // Guardar cambios en el JSON
+            List<RutaJSON> todasLasRutas = obtenerTodasLasRutasDelGrafo();
+            DatosRedJSON datosActualizados = new DatosRedJSON(mapaParadas, todasLasRutas);
+            gestorDatos.guardarDatos(datosActualizados, RUTA_ARCHIVO);
+
+            animarEntradaPanel(contenedorLateral.getChildren().get(0), false);
+        } else {
+            // Mostrar alerta si el DFS determinó que se fragmenta el grafo
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Operación no permitida");
+            alert.setHeaderText("No se puede eliminar la parada: " + p.getNombre());
+            alert.setContentText("Esta parada es un punto crítico. Eliminarla dejaría otras paradas aisladas.");
+            alert.showAndWait();
+        }
+    }
+
+    private void refrescarMapaVisual() {
+        // Guardamos la imagen del mapa
+        javafx.scene.Node mapaImagen = panelGrafo.getChildren().get(0);
+        panelGrafo.getChildren().clear();
+        panelGrafo.getChildren().add(mapaImagen);
+
+        // Redibujar paradas
+        for (Parada parada : mapaParadas.values()) {
+            dibujarParadaEnMapa(parada);
+        }
+
+        // Redibujar todas las rutas
+        for (Parada origen : mapaParadas.values()) {
+            for (Ruta ruta : grafo.obtenerVecinos(origen)) {
+                dibujarLineaRuta(origen, ruta.getDestino());
+            }
         }
     }
 }

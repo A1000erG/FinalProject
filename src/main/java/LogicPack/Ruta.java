@@ -21,6 +21,14 @@ public class Ruta {
         pesos = new EnumMap<>(Pond.class);
     }
 
+    public Ruta(Parada destino, Map<Pond, Double> pesosIniciales) {
+        this.destino = destino;
+        this.pesos = new EnumMap<>(Pond.class);
+        if (pesosIniciales != null) {
+            this.pesos.putAll(pesosIniciales);
+        }
+    }
+
     public void setPond(Pond tipo, Double valor){
         pesos.put(tipo, valor);
     }
