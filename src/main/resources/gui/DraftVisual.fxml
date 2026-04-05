@@ -85,7 +85,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="332.0" spacing="75.0">
                      <children>
-                        <RadioButton mnemonicParsing="false" styleClass="radio-minimal" text="Tiempo">
+                        <RadioButton fx:id="rbTiempo" mnemonicParsing="false" styleClass="radio-minimal" text="Tiempo">
                            <toggleGroup>
                               <ToggleGroup fx:id="opcionesRuta" />
                            </toggleGroup>
@@ -93,7 +93,7 @@
                               <Font name="HelveticaLTStd-Roman" size="14.0" />
                            </font>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" styleClass="radio-minimal" text="Distancia" toggleGroup="$opcionesRuta">
+                        <RadioButton fx:id="rbDistancia" mnemonicParsing="false" styleClass="radio-minimal" text="Distancia" toggleGroup="$opcionesRuta">
                            <font>
                               <Font name="HelveticaLTStd-Roman" size="14.0" />
                            </font>
@@ -105,12 +105,12 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="305.0" spacing="40.0">
                      <children>
-                        <RadioButton mnemonicParsing="false" selected="true" styleClass="radio-minimal" text="Menos Costo" toggleGroup="$opcionesRuta">
+                        <RadioButton fx:id="rbCosto" mnemonicParsing="false" selected="true" styleClass="radio-minimal" text="Menos Costo" toggleGroup="$opcionesRuta">
                            <font>
                               <Font name="HelveticaLTStd-Roman" size="14.0" />
                            </font>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" styleClass="radio-minimal" text="Menos Transbordo" toggleGroup="$opcionesRuta">
+                        <RadioButton fx:id="rbTransbordos" mnemonicParsing="false" styleClass="radio-minimal" text="Menos Transbordo" toggleGroup="$opcionesRuta">
                            <font>
                               <Font name="HelveticaLTStd-Roman" size="14.0" />
                            </font>
@@ -120,7 +120,7 @@
                         <Insets left="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="40.0" prefWidth="380.0" styleClass="boton-buscar" text="Buscar" />
+                  <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#onBtnBuscarClicked" prefHeight="40.0" prefWidth="380.0" styleClass="boton-buscar" text="Buscar" />
                </children>
             </VBox>
          </children>

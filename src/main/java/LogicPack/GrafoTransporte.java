@@ -76,10 +76,20 @@ public class GrafoTransporte {
 
     public void conectar(Parada origen, Parada destino, Map<Pond, Double> pesos) {
         if (adyacencias.containsKey(origen) && adyacencias.containsKey(destino)) {
+
+            double dx = destino.getCoordX() - origen.getCoordX();
+            double dy = destino.getCoordY() - origen.getCoordY();
+
+            double distanciaPixels = Math.sqrt(dx*dx + dy*dy);
+            double distanciaKM = distanciaPixels * 0.05;
+
+            double tiempoEstimado = (distanciaKM / 40.0) * 60.0;
+
+            pesos.putIfAbsent(Pond.DISTANCIA, distanciaKM);
+            pesos.putIfAbsent(Pond.TIEMPO, tiempoEstimado);
+
             Ruta nuevaRuta = new Ruta(destino, pesos);
             adyacencias.get(origen).add(nuevaRuta);
-        } else {
-            System.err.println("Error: Una de las paradas no existe en el grafo.");
         }
     }
 
