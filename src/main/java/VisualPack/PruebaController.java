@@ -3,6 +3,7 @@ package VisualPack;
 import PersistancePack.DatosRedJSON;
 import PersistancePack.RutaJSON;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
@@ -11,6 +12,8 @@ import javafx.scene.shape.Circle;
 import javafx.animation.TranslateTransition;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,12 +140,13 @@ public class PruebaController {
 
     @FXML
     void onMapaClicked(MouseEvent event) {
+        panelGrafo.getChildren().removeIf(n -> n.getStyleClass().contains("popup-info"));
+
         if (fueArrastrado) { fueArrastrado = false; return; }
 
         if (event.getClickCount() == 2) {
             this.tempX = event.getX();
             this.tempY = event.getY();
-
             crearMarcadorTemporal(tempX, tempY);
 
             if (comboConectarFijo != null) {
@@ -181,6 +185,8 @@ public class PruebaController {
     @FXML
     void onMouseDragged(MouseEvent event) {
         fueArrastrado = true;
+
+        panelGrafo.getChildren().removeIf(n -> n.getStyleClass().contains("popup-info"));
 
         // Lógica de desplazamiento (Panning) del ScrollPane
         double deltaX = event.getSceneX() - x;
@@ -548,6 +554,21 @@ public class PruebaController {
         circuloParada.setStroke(javafx.scene.paint.Color.WHITE);
         circuloParada.setStrokeWidth(2);
 
+        circuloParada.setOnMouseClicked(e -> {
+            e.consume(); // Evita que el mapa detecte un clic y quiera crear otra parada
+
+            // Usamos las coordenadas reales del centro del círculo
+            mostrarPopup(p, circuloParada.getCenterX(), circuloParada.getCenterY());
+        });
+
+        circuloParada.setOnMouseEntered(e -> {
+            circuloParada.setRadius(12); // Crece un poquito
+            circuloParada.setCursor(javafx.scene.Cursor.HAND);
+        });
+        circuloParada.setOnMouseExited(e -> {
+            circuloParada.setRadius(10); // Vuelve a su tamaño
+        });
+
         // 3. (Opcional) Añadir un efecto de sombra para que resalte
         circuloParada.setEffect(new javafx.scene.effect.DropShadow(5, javafx.scene.paint.Color.GRAY));
         circuloParada.setViewOrder(0.0); // Al frente de todo
@@ -664,17 +685,40 @@ public class PruebaController {
 
         // Color y estilo (usa el mismo que la línea)
         flecha.setFill(javafx.scene.paint.Color.web("#4A4A4A"));
-        //flecha.setStroke(javafx.scene.paint.Color.WHITE);
-//        //flecha.setStrokeWidth(0.5);
-//
-//        // Rotar y posicionar la flecha al final (x2, y2)
-//        flecha.setRotate(Math.toDegrees(angulo));
-//
-//        double offset = 12.0;
-//        flecha.setLayoutX(x2 - Math.cos(angulo) * offset);
-//        flecha.setLayoutY(y2 - Math.sin(angulo) * offset);
-
         return flecha;
     }
 
+
+    // ==========================================
+    //                 DETALLES
+    // ==========================================
+
+    private void mostrarPopup(Parada p, double x, double y) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/DetallePopup.fxml"));
+            VBox popup = loader.load();
+
+            Label lbl = (Label) popup.lookup("#lblNombrePopup");
+            Button btn = (Button) popup.lookup("#btnDetallesPopup");
+
+            if (lbl != null) lbl.setText(p.getNombre());
+            if (btn != null) {
+                btn.setOnAction(e -> {
+                    System.out.println("Abriendo panel detallado de: " + p.getNombre());
+                    // Aquí podrías llamar a otra función para mostrar info del grafo
+                });
+            }
+
+            popup.getStyleClass().add("popup-info");
+
+            popup.setLayoutX(x - 65);
+            popup.setLayoutY(y - 95);
+
+            panelGrafo.getChildren().removeIf(n -> n.getStyleClass().contains("popup-info"));
+            panelGrafo.getChildren().add(popup);
+
+        } catch (IOException e) {
+            System.err.println("No se pudo cargar DetallePopup.fxml: " + e.getMessage());
+        }
+    }
 }
