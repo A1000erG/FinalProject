@@ -6,14 +6,20 @@ import PersistancePack.DatosRedJSON;
 import PersistancePack.RutaJSON;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.animation.TranslateTransition;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,6 +45,7 @@ public class PruebaController {
     private GestorDatosJSON gestorDatos = new GestorDatosJSON();
     private final String RUTA_ARCHIVO = "src/main/resources/datos/red_transporte.json";
     private Map<String, Parada> mapaParadas = new HashMap<>();
+    private Parada paradaEnEdicion = null;
 
     // --- VARIABLES DE CONTROL Y ESTADO ---
     private double x = 0, y = 0;            // Para el arrastre del mapa
@@ -48,9 +55,6 @@ public class PruebaController {
     private Line lineaPrevia;
     private javafx.scene.shape.Polygon flechaPrevia;
 
-    // --- VARIABLES DE LA RUTA ---
-    @FXML private TextField txtTiempoFijo;
-    @FXML private TextField txtCostoFijo;
 
     // ==========================================
     //       INICIALIZACIÓN Y CONFIGURACIÓN
@@ -59,7 +63,6 @@ public class PruebaController {
     @FXML
     public void initialize() {
         setupMapa();
-
 
         // --- NUEVO: Cargar datos guardados ---
         DatosRedJSON datosCargados = gestorDatos.cargarDatos(RUTA_ARCHIVO);
@@ -94,20 +97,6 @@ public class PruebaController {
         });
 
         panelEdicion.setTranslateX(4000);
-
-        // RESTRICCIÓN PARA EL CAMPO TIEMPO
-        txtTiempoFijo.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*(\\.\\d*)?")) {
-                txtTiempoFijo.setText(oldValue); // Si no es número, vuelve al valor anterior
-            }
-        });
-
-        // RESTRICCIÓN PARA EL CAMPO COSTO
-        txtCostoFijo.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*(\\.\\d*)?")) {
-                txtCostoFijo.setText(oldValue);
-            }
-        });
     }
 
     private void setupMapa() {
@@ -143,39 +132,23 @@ public class PruebaController {
 
     @FXML
     void onMapaClicked(MouseEvent event) {
-        panelGrafo.getChildren().removeIf(n -> n.getStyleClass().contains("popup-info"));
+        panelGrafo.getChildren().removeIf(n ->
+                n.getStyleClass().contains("popup-info") ||
+                        (n instanceof Circle && ((Circle) n).getFill() == Color.BLACK)
+        );
 
         if (fueArrastrado) { fueArrastrado = false; return; }
 
         if (event.getClickCount() == 2) {
+
+            this.paradaEnEdicion = null;
+            cargarPanelCreacion();
+
             this.tempX = event.getX();
             this.tempY = event.getY();
             crearMarcadorTemporal(tempX, tempY);
 
-            if (comboConectarFijo != null) {
-                comboConectarFijo.getItems().clear(); // Limpiar opciones viejas
-                for (Parada p : mapaParadas.values()) {
-                    comboConectarFijo.getItems().add(p.getNombre());
-                }
-
-                comboConectarFijo.setOnAction(e -> {
-                    String seleccionado = comboConectarFijo.getValue();
-                    System.out.println("Seleccionado en combo: " + seleccionado);
-                    if (seleccionado != null) {
-                        Parada destino = mapaParadas.values().stream()
-                                .filter(p -> p.getNombre().equals(seleccionado))
-                                .findFirst().orElse(null);
-
-                        if (destino != null) {
-                            // Dibujamos una línea temporal que se borra si cambias de opinión
-                            dibujarLineaTemporal(tempX, tempY, destino);
-                        }
-                    }
-                });
-            }
-
             animarPanel(true);
-            txtNombreParada.requestFocus();
         }
     }
 
@@ -226,33 +199,34 @@ public class PruebaController {
     private void confirmarNuevaParada() {
 
         String nombre = txtNombreParada.getText();
-        if (nombre == null || nombre.isEmpty()) return;
-
-        String tiempoRaw = txtTiempoFijo.getText();
-        String costoRaw = txtCostoFijo.getText();
 
         // VALIDACIÓN BÁSICA
-        if (nombre.isEmpty() || tiempoRaw.isEmpty() || costoRaw.isEmpty()) {
+        if (nombre == null || nombre.trim().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Campos incompletos");
-            alert.setContentText("Por favor, rellena el nombre, tiempo y costo antes de continuar.");
+            alert.setContentText("Por favor, rellena el nombre de la parada antes de continuar.");
             alert.showAndWait();
             return;
         }
 
-        // Si todo está bien, procedes con el Double.parseDouble y el guardado...
-        double tiempo = Double.parseDouble(tiempoRaw);
-        double costo = Double.parseDouble(costoRaw);
+        Parada paradaAProcesar;
 
+        if (this.paradaEnEdicion != null) {
+            // CASO EDICIÓN: Usamos la parada existente
+            paradaAProcesar = this.paradaEnEdicion;
+            paradaAProcesar.setNombre(nombre); // Actualizamos el nombre por si lo cambió
 
+            grafo.eliminarRutasDesde(paradaAProcesar);
 
-        // Crear objeto Parada
-        String id = "P" + (mapaParadas.size() + 1);
-        Parada nueva = new Parada(id, nombre, tempX, tempY);
+        } else {
+            // CASO CREACIÓN: Creamos una nueva instancia
+            String id = "P" + (mapaParadas.size() + 1);
+            paradaAProcesar = new Parada(id, nombre, tempX, tempY);
+            mapaParadas.put(id, paradaAProcesar);
+            grafo.agregarParada(paradaAProcesar);
+        }
 
-        mapaParadas.put(id, nueva);
-        grafo.agregarParada(nueva);
-
+        // LIMPIEZA DE PREVISUALIZACIONES (Líneas punteadas)
         if (lineaPrevia != null) {
             panelGrafo.getChildren().remove(lineaPrevia);
             lineaPrevia = null;
@@ -262,36 +236,66 @@ public class PruebaController {
             flechaPrevia = null;
         }
 
-        String nombreDestinoFijo = comboConectarFijo.getValue();
-        if (nombreDestinoFijo != null) {
-            Parada destinoFijo = mapaParadas.values().stream()
-                    .filter(p -> p.getNombre().equals(nombreDestinoFijo))
-                    .findFirst().orElse(null);
-
-            if (destinoFijo != null) {
-                // Creamos pesos por defecto (puedes ajustarlos)
-                Map<LogicPack.Pond, Double> pesosFijos = new HashMap<>();
-                pesosFijos.put(LogicPack.Pond.TIEMPO, 10.0);
-                pesosFijos.put(LogicPack.Pond.COSTO, 5.0);
-
-                grafo.conectar(nueva, destinoFijo, pesosFijos);
-                dibujarLineaRuta(nueva, destinoFijo); // <--- AQUÍ SE DIBUJA LA LÍNEA
-            }
+        for (Node n : previsualizacionesTemporales) {
+            panelGrafo.getChildren().remove(n);
         }
+        previsualizacionesTemporales.clear();
 
-        extraerRutasDelPanel(nueva);
+        // PROCESAR CONEXIONES (Extrae todo lo que hay en el VBox)
+        extraerRutasDelPanel(paradaAProcesar);
 
+        // PERSISTENCIA Y GUARDADO
         List<RutaJSON> todasLasRutas = obtenerTodasLasRutasDelGrafo();
         DatosRedJSON datosParaGuardar = new DatosRedJSON(mapaParadas, todasLasRutas);
         gestorDatos.guardarDatos(datosParaGuardar, RUTA_ARCHIVO);
 
-        // Actualizar Visual: de marcador negro a círculo coral
-        actualizarMarcadorAParadaReal(nueva);
+
+        panelGrafo.getChildren().removeIf(n -> n instanceof Circle && ((Circle) n).getFill() == Color.BLACK);
+
+        // ACTUALIZAR INTERFAZ
+        actualizarMarcadorAParadaReal(paradaAProcesar);
         animarPanel(false);
 
+        // RESETEO DE CAMPOS Y VARIABLE DE CONTROL
         txtNombreParada.clear();
-        comboConectarFijo.getSelectionModel().clearSelection();
         vboxRutas.getChildren().clear();
+        this.paradaEnEdicion = null;
+        this.tempX = 0;
+        this.tempY = 0;
+    }
+
+    private void cargarPanelCreacion() {
+        try {
+            // 1. Verificar si el archivo FXML existe
+            var resource = getClass().getResource("/gui/NuevaParada.fxml");
+            if (resource == null) {
+                System.err.println("ERROR: No se encontró el archivo /gui/NuevaParada.fxml");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
+            AnchorPane view = loader.load();
+
+            // 2. Limpiar e insertar en el contenedor
+            if (contenedorLateral != null) {
+                contenedorLateral.getChildren().setAll(view);
+            } else {
+                System.err.println("ERROR: contenedorLateral es NULL");
+                return;
+            }
+
+            // 3. Vincular componentes con seguridad
+            txtNombreParada = (TextField) view.lookup("#txtNombreParada");
+            vboxRutas = (VBox) view.lookup("#vboxRutas");
+
+            // Si usas un botón de cerrar en ese panel, vincúlalo aquí también
+            Button btnCerrar = (Button) view.lookup("#btnCerrarNueva");
+            if (btnCerrar != null) btnCerrar.setOnAction(e -> animarPanel(false));
+
+        } catch (IOException e) {
+            System.err.println("FALLO CRÍTICO al cargar el FXML:");
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -309,7 +313,6 @@ public class PruebaController {
         animarPanel(false);
     }
 
-    @FXML private ComboBox<String> comboConectarFijo;
 
     @FXML private VBox vboxRutas;
 
@@ -514,6 +517,20 @@ public class PruebaController {
             }
         }
         return todas;
+    }
+
+    private void cargarFilaConDatos(String nombreDestino, double tiempo, double costo) {
+        agregarNuevaFilaRuta();
+        HBox ultimaFila = (HBox) vboxRutas.getChildren().get(vboxRutas.getChildren().size() - 1);
+
+        // Buscamos los componentes dentro de esa fila (según el orden en que los añadiste)
+        ComboBox<String> combo = (ComboBox<String>) ultimaFila.getChildren().get(0);
+        TextField txtT = (TextField) ultimaFila.getChildren().get(1);
+        TextField txtC = (TextField) ultimaFila.getChildren().get(2);
+
+        combo.setValue(nombreDestino);
+        txtT.setText(String.valueOf(tiempo));
+        txtC.setText(String.valueOf(costo));
     }
 
 
@@ -796,10 +813,23 @@ public class PruebaController {
             if (txtNombre != null) txtNombre.setText(p.getNombre());
 
             Button btnEliminar = (Button) view.lookup("#btnEliminar");
-            btnEliminar.setOnAction(e -> eliminarParada(p));
+            if (btnEliminar != null) {
+                btnEliminar.setOnAction(e -> {
+                    System.out.println("Abriendo confirmación para eliminar: " + p.getNombre());
+                    mostrarConfirmacionEliminar(p);
+                });
+            }
 
             Button btnCerrar = (Button) view.lookup("#btnCerrarDetalle");
             if (btnCerrar != null) btnCerrar.setOnAction(e -> animarEntradaPanel(view, false));
+
+            Button btnEditar = (Button) view.lookup("#btnEditar");
+            if (btnEditar != null) {
+                btnEditar.setOnAction(e -> {
+                    System.out.println("Cambiando a modo edición para: " + p.getNombre());
+                    abrirEdicionParada(p);
+                });
+            }
 
             if (contenedorLateral != null) {
                 contenedorLateral.setMouseTransparent(false); // Para que responda a clics
@@ -818,31 +848,81 @@ public class PruebaController {
         }
     }
 
-    private void eliminarParada(Parada p) {
-        // 1. Intentar eliminar del motor lógico
-        boolean exito = grafo.eliminarParada(p);
+    private void ejecutarEliminacionReal(Parada p) {
+        grafo.eliminarParada(p);
+        mapaParadas.remove(p.getId());
 
-        if (exito) {
-            // Eliminar del mapa de paradas (Persistencia)
-            mapaParadas.remove(p.getId());
+        // Guardar cambios en el JSON
+        List<RutaJSON> todasLasRutas = obtenerTodasLasRutasDelGrafo();
+        DatosRedJSON datosActualizados = new DatosRedJSON(mapaParadas, todasLasRutas);
+        gestorDatos.guardarDatos(datosActualizados, RUTA_ARCHIVO);
 
-            // Limpiar el mapa visual (Círculos y Líneas)
-            refrescarMapaVisual();
-
-            // Guardar cambios en el JSON
-            List<RutaJSON> todasLasRutas = obtenerTodasLasRutasDelGrafo();
-            DatosRedJSON datosActualizados = new DatosRedJSON(mapaParadas, todasLasRutas);
-            gestorDatos.guardarDatos(datosActualizados, RUTA_ARCHIVO);
-
+        // Refrescar la vista
+        refrescarMapaVisual();
+        if (!contenedorLateral.getChildren().isEmpty()) {
             animarEntradaPanel(contenedorLateral.getChildren().get(0), false);
-        } else {
-            // Mostrar alerta si el DFS determinó que se fragmenta el grafo
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Operación no permitida");
-            alert.setHeaderText("No se puede eliminar la parada: " + p.getNombre());
-            alert.setContentText("Esta parada es un punto crítico. Eliminarla dejaría otras paradas aisladas.");
-            alert.showAndWait();
         }
+    }
+
+    private void mostrarConfirmacionEliminar(Parada p) {
+        StackPane overlay = new StackPane();
+        Pane nodoRaiz = (Pane) panelGrafo.getScene().getRoot();
+
+        overlay.setPrefSize(nodoRaiz.getWidth(), nodoRaiz.getHeight());
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4);");
+
+        VBox dialog = new VBox(20);
+        dialog.setMaxSize(300, 200);
+        dialog.setAlignment(Pos.CENTER);
+        dialog.setStyle("-fx-background-color: white; -fx-background-radius: 20;");
+        dialog.setEffect(new DropShadow(10, Color.rgb(0,0,0,0.2)));
+
+        // Cabecera Coral
+        StackPane header = new StackPane(new Label(p.getNombre().toUpperCase()));
+        header.setMinHeight(50);
+        header.setStyle("-fx-background-color: #E68484; -fx-background-radius: 20 20 0 0;");
+        header.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+
+        Label mensaje = new Label("¿Seguro que quieres eliminar\nesta parada?");
+        mensaje.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+
+        HBox botones = new HBox(20, crearBotonConfirmar(true, overlay, p), crearBotonConfirmar(false, overlay, p));
+        botones.setAlignment(Pos.CENTER);
+        botones.setPadding(new Insets(10));
+
+        dialog.getChildren().addAll(header, mensaje, botones);
+        overlay.getChildren().add(dialog);
+
+        nodoRaiz.getChildren().add(overlay);
+        overlay.toFront();
+    }
+
+    private Button crearBotonConfirmar(boolean esAceptar, StackPane overlay, Parada p) {
+        Button btn = new Button(esAceptar ? "✔" : "✘");
+
+        // Estilo según el tipo de botón
+        String colorBase = esAceptar ? "#82E082" : "#E68484"; // Verde o Coral
+        btn.setStyle("-fx-background-color: " + colorBase + "; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-weight: bold; " +
+                "-fx-background-radius: 10; " +
+                "-fx-min-width: 80; " +
+                "-fx-cursor: hand;");
+
+        btn.setOnAction(e -> {
+            if (esAceptar) {
+                ejecutarEliminacionReal(p); // Llamamos a la lógica de borrado
+            } else {
+                panelGrafo.getChildren().removeIf(n -> n instanceof Circle && ((Circle) n).getFill() == Color.BLACK);
+                animarPanel(false);
+            }
+
+            if (overlay.getParent() instanceof Pane) {
+                ((Pane) overlay.getParent()).getChildren().remove(overlay);
+            }
+        });
+
+        return btn;
     }
 
     private void refrescarMapaVisual() {
@@ -862,5 +942,27 @@ public class PruebaController {
                 dibujarLineaRuta(origen, ruta.getDestino());
             }
         }
+    }
+
+    private void abrirEdicionParada(Parada p) {
+
+        this.paradaEnEdicion = p;
+
+        txtNombreParada.setText(p.getNombre());
+        vboxRutas.getChildren().clear();
+
+        this.tempX = p.getCoordX();
+        this.tempY = p.getCoordY();
+        List<Ruta> conexiones = grafo.obtenerVecinos(p);
+
+        for (Ruta r : conexiones) {
+            cargarFilaConDatos(r.getDestino().getNombre(),
+                    r.getPond(Pond.TIEMPO),
+                    r.getPond(Pond.COSTO));
+        }
+
+        panelEdicion.setVisible(true);
+        contenedorLateral.getChildren().setAll(panelEdicion);
+        animarEntradaPanel(panelEdicion, true);
     }
 }

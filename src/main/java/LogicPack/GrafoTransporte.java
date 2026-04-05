@@ -38,71 +38,25 @@ public class GrafoTransporte {
 
     //public void eliminarParada(Parada origen, Parada destino){}
     public boolean eliminarParada(Parada paradaAEliminar) {
-
-        // 1. Validaciones iniciales: O(1)
+        // 1. Validación inicial: O(1)
         if (paradaAEliminar == null || !adyacencias.containsKey(paradaAEliminar)) {
             System.out.println("La parada no existe en la red.");
             return false;
         }
 
-        // Caso base: Si la red tiene 1 o 2 paradas, no hay riesgo de fragmentación compleja
-        if (adyacencias.size() <= 2) {
-            adyacencias.remove(paradaAEliminar);
-            for (List<Ruta> rutas : adyacencias.values()) {
-                rutas.removeIf(r -> r.getDestino().equals(paradaAEliminar));
-            }
-            return true;
+        // 2. ELIMINACIÓN DE RUTAS ENTRANTES: O(|V| + |E|)
+        // Recorremos todas las listas de rutas de las paradas restantes
+        // y borramos cualquier flecha que tuviera como destino a 'paradaAEliminar'
+        for (List<Ruta> rutas : adyacencias.values()) {
+            rutas.removeIf(r -> r.getDestino().equals(paradaAEliminar));
         }
 
-        // 2. FASE DE BACKUP: O(|V| + |E|)
-        // Respaldamos las rutas que salen de la parada
-        List<Ruta> rutasSalientes = new ArrayList<>(adyacencias.get(paradaAEliminar));
-
-        // Respaldamos y eliminamos de forma tentativa las rutas que entran a la parada
-        Map<Parada, List<Ruta>> rutasEntrantesRespaldo = new HashMap<>();
-        for (Map.Entry<Parada, List<Ruta>> entry : adyacencias.entrySet()) {
-            Parada origen = entry.getKey();
-            if (origen.equals(paradaAEliminar)) continue;
-
-            List<Ruta> rutasHaciaDestino = new ArrayList<>();
-            for (Ruta r : entry.getValue()) {
-                if (r.getDestino().equals(paradaAEliminar)) {
-                    rutasHaciaDestino.add(r);
-                }
-            }
-
-            if (!rutasHaciaDestino.isEmpty()) {
-                rutasEntrantesRespaldo.put(origen, rutasHaciaDestino);
-                entry.getValue().removeAll(rutasHaciaDestino); // Eliminación tentativa
-            }
-        }
-
-        // 3. FASE DE ELIMINACIÓN TENTATIVA: O(1)
+        // 3. ELIMINACIÓN DE LA PARADA Y SUS RUTAS SALIENTES: O(1)
+        // Al remover la parada del mapa, desaparecen automáticamente sus rutas salientes
         adyacencias.remove(paradaAEliminar);
 
-        // 4. FASE DE VALIDACIÓN CON DFS: O(|V| + |E|) [cite: 290, 304]
-        Parada paradaPrueba = adyacencias.keySet().iterator().next(); // Tomamos cualquier parada restante
-        DFS dfs = new DFS();
-        Set<Parada> nodosAlcanzables = dfs.obtenerNodosAlcanzables(this, paradaPrueba);
-
-        // 5. FASE DE DECISIÓN Y ROLLBACK
-        if (nodosAlcanzables.size() == adyacencias.size()) {
-            // Éxito: La red sigue conectada
-            System.out.println("Parada eliminada con éxito. La red sigue conectada.");
-            return true;
-        } else {
-            // Fallo: Se fragmentó el grafo. Hacemos ROLLBACK: O(|V| + |E|)
-            System.out.println("Error: Eliminar esta parada rompería la conectividad de la red.");
-
-            // Restauramos la parada y sus rutas salientes
-            adyacencias.put(paradaAEliminar, rutasSalientes);
-
-            // Restauramos las rutas entrantes
-            for (Map.Entry<Parada, List<Ruta>> entry : rutasEntrantesRespaldo.entrySet()) {
-                adyacencias.get(entry.getKey()).addAll(entry.getValue());
-            }
-            return false;
-        }
+        System.out.println("Parada " + paradaAEliminar.getNombre() + " eliminada exitosamente.");
+        return true;
     }
 
     // Complejidad: O(E) donde E es el número de rutas del nodo
@@ -126,6 +80,12 @@ public class GrafoTransporte {
             adyacencias.get(origen).add(nuevaRuta);
         } else {
             System.err.println("Error: Una de las paradas no existe en el grafo.");
+        }
+    }
+
+    public void eliminarRutasDesde(Parada p) {
+        if (this.adyacencias.containsKey(p)) {
+            this.adyacencias.get(p).clear();
         }
     }
 }
