@@ -26,7 +26,7 @@
     },
     "P8" : {
       "id" : "P8",
-      "nombre" : "Parada B",
+      "nombre" : "Parada BB",
       "coordX" : 951.3333333333334,
       "coordY" : 747.3333333333333
     },
@@ -83,20 +83,14 @@
       "nombre" : "Parada X",
       "coordX" : 396.0,
       "coordY" : 566.6666666666667
-    },
-    "P15" : {
-      "id" : "P15",
-      "nombre" : "PruebaPrueba",
-      "coordX" : 529.3333333333333,
-      "coordY" : 869.3333333333333
     }
   },
   "rutas" : [ {
     "idOrigen" : "P-005",
     "idDestino" : "P-002",
     "pesos" : {
-      "COSTO" : 23.0,
       "TIEMPO" : 23.0,
+      "COSTO" : 23.0,
       "DISTANCIA" : 87.0,
       "TRANSBORDOS" : 1.0
     }
@@ -104,8 +98,8 @@
     "idOrigen" : "P-005",
     "idDestino" : "P-004",
     "pesos" : {
-      "COSTO" : 90.0,
       "TIEMPO" : 34.0,
+      "COSTO" : 90.0,
       "DISTANCIA" : 15.0,
       "TRANSBORDOS" : 34.0
     }
@@ -113,8 +107,8 @@
     "idOrigen" : "P-001",
     "idDestino" : "P-005",
     "pesos" : {
-      "COSTO" : -10.0,
       "TIEMPO" : 23.0,
+      "COSTO" : -10.0,
       "DISTANCIA" : 8.0,
       "TRANSBORDOS" : 2.0
     }
@@ -122,8 +116,8 @@
     "idOrigen" : "P-002",
     "idDestino" : "P-001",
     "pesos" : {
-      "COSTO" : 30.0,
       "TIEMPO" : 21.0,
+      "COSTO" : 30.0,
       "DISTANCIA" : 18.0,
       "TRANSBORDOS" : 6.0
     }
@@ -131,8 +125,8 @@
     "idOrigen" : "P-002",
     "idDestino" : "P-004",
     "pesos" : {
-      "COSTO" : -13.0,
       "TIEMPO" : 10.0,
+      "COSTO" : -13.0,
       "DISTANCIA" : 5.0,
       "TRANSBORDOS" : 1.0
     }
@@ -140,15 +134,15 @@
     "idOrigen" : "P9",
     "idDestino" : "P8",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P-003",
     "idDestino" : "P-005",
     "pesos" : {
-      "COSTO" : 17.0,
       "TIEMPO" : 56.0,
+      "COSTO" : 17.0,
       "DISTANCIA" : 34.0,
       "TRANSBORDOS" : 5.0
     }
@@ -156,8 +150,8 @@
     "idOrigen" : "P-004",
     "idDestino" : "P-003",
     "pesos" : {
-      "COSTO" : 46.0,
       "TIEMPO" : 34.0,
+      "COSTO" : 46.0,
       "DISTANCIA" : 25.0,
       "TRANSBORDOS" : 3.0
     }
@@ -165,92 +159,64 @@
     "idOrigen" : "P10",
     "idDestino" : "P-004",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P12",
     "idDestino" : "P-006",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P11",
     "idDestino" : "P8",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P14",
     "idDestino" : "P7",
     "pesos" : {
-      "COSTO" : 200.0,
-      "TIEMPO" : 25.0
+      "TIEMPO" : 25.0,
+      "COSTO" : 200.0
     }
   }, {
     "idOrigen" : "P14",
     "idDestino" : "P13",
     "pesos" : {
-      "COSTO" : 150.0,
-      "TIEMPO" : 15.0
+      "TIEMPO" : 15.0,
+      "COSTO" : 150.0
     }
   }, {
     "idOrigen" : "P14",
     "idDestino" : "P8",
     "pesos" : {
-      "COSTO" : 180.0,
-      "TIEMPO" : 20.3
+      "TIEMPO" : 20.3,
+      "COSTO" : 180.0
     }
   }, {
     "idOrigen" : "P13",
     "idDestino" : "P11",
     "pesos" : {
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0
     }
   }, {
     "idOrigen" : "P13",
     "idDestino" : "P7",
     "pesos" : {
-      "COSTO" : 150.0,
-      "TIEMPO" : 20.0
+      "TIEMPO" : 20.0,
+      "COSTO" : 150.0
     }
   }, {
     "idOrigen" : "P13",
     "idDestino" : "P9",
     "pesos" : {
-      "COSTO" : 100.0,
-      "TIEMPO" : 15.0
-    }
-  }, {
-    "idOrigen" : "P15",
-    "idDestino" : "P7",
-    "pesos" : {
-      "COSTO" : 250.0,
-      "TIEMPO" : 25.0
-    }
-  }, {
-    "idOrigen" : "P15",
-    "idDestino" : "P8",
-    "pesos" : {
-      "COSTO" : 200.0,
-      "TIEMPO" : 20.0
-    }
-  }, {
-    "idOrigen" : "P15",
-    "idDestino" : "P9",
-    "pesos" : {
-      "COSTO" : 150.0,
-      "TIEMPO" : 10.0
-    }
-  }, {
-    "idOrigen" : "P15",
-    "idDestino" : "P13",
-    "pesos" : {
-      "COSTO" : 100.0,
-      "TIEMPO" : 15.0
+      "TIEMPO" : 15.0,
+      "COSTO" : 100.0
     }
   } ]
 }

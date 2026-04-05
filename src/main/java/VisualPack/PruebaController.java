@@ -873,18 +873,24 @@ public class PruebaController {
 
         VBox dialog = new VBox(20);
         dialog.setMaxSize(300, 200);
-        dialog.setAlignment(Pos.CENTER);
+        dialog.setAlignment(Pos.TOP_CENTER);
         dialog.setStyle("-fx-background-color: white; -fx-background-radius: 20;");
+        dialog.setPadding(Insets.EMPTY);
         dialog.setEffect(new DropShadow(10, Color.rgb(0,0,0,0.2)));
 
         // Cabecera Coral
         StackPane header = new StackPane(new Label(p.getNombre().toUpperCase()));
         header.setMinHeight(50);
+        header.setPrefWidth(300);
         header.setStyle("-fx-background-color: #E68484; -fx-background-radius: 20 20 0 0;");
-        header.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        //header.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+
+        Label lblNombre = (Label) header.getChildren().get(0);
+        lblNombre.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
 
         Label mensaje = new Label("¿Seguro que quieres eliminar\nesta parada?");
         mensaje.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        VBox.setMargin(mensaje, new Insets(10, 0, 0, 0));
 
         HBox botones = new HBox(20, crearBotonConfirmar(true, overlay, p), crearBotonConfirmar(false, overlay, p));
         botones.setAlignment(Pos.CENTER);
