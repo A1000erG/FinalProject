@@ -1,9 +1,13 @@
 package VisualPack;
 
+import LogicPack.Algorithms.DijkstraAlgo;
 import LogicPack.Pond;
 import LogicPack.Ruta;
 import PersistancePack.DatosRedJSON;
 import PersistancePack.RutaJSON;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -29,6 +33,7 @@ import java.util.Map;
 import LogicPack.GrafoTransporte;
 import LogicPack.Parada;
 import PersistancePack.GestorDatosJSON;
+import javafx.util.StringConverter;
 
 
 public class PruebaController {
@@ -55,6 +60,13 @@ public class PruebaController {
     private Line lineaPrevia;
     private javafx.scene.shape.Polygon flechaPrevia;
 
+    // --- VARIABLES DE CALCULO DE MEJOR RUTA ---
+    @FXML private ComboBox<Parada> cbOrigen;
+    @FXML private ComboBox<Parada> cbDestino;
+    @FXML private RadioButton rbTiempo, rbDistancia, rbCosto, rbTransbordos;
+
+    private DijkstraAlgo dijkstra = new DijkstraAlgo();
+
 
     // ==========================================
     //       INICIALIZACIÓN Y CONFIGURACIÓN
@@ -64,7 +76,7 @@ public class PruebaController {
     public void initialize() {
         setupMapa();
 
-        // --- NUEVO: Cargar datos guardados ---
+        // --- Cargar datos guardados ---
         DatosRedJSON datosCargados = gestorDatos.cargarDatos(RUTA_ARCHIVO);
 
         if (datosCargados != null) {
@@ -77,7 +89,7 @@ public class PruebaController {
                 }
             }
 
-            // 2. Recuperar Rutas (Aquí es donde se conectan realmente en el grafo)
+            // Recuperar Rutas (Aquí es donde se conectan realmente en el grafo)
             if (datosCargados.getRutas() != null) {
                 for (RutaJSON r : datosCargados.getRutas()) {
                     Parada origen = mapaParadas.get(r.getIdOrigen());
@@ -90,12 +102,40 @@ public class PruebaController {
             }
         }
 
+        if (cbOrigen != null && cbDestino != null) {
+            // Creamos la lista con las paradas que acabamos de cargar
+            ObservableList<Parada> listaParadas = FXCollections.observableArrayList(mapaParadas.values());
 
+            cbOrigen.setItems(listaParadas);
+            cbDestino.setItems(listaParadas);
+
+            // Configuramos el convertidor para mostrar nombres en lugar de IDs de memoria
+            StringConverter<Parada> converter = new StringConverter<Parada>() {
+                @Override
+                public String toString(Parada p) {
+                    return (p == null) ? "" : p.getNombre();
+                }
+
+                @Override
+                public Parada fromString(String s) {
+                    return null;
+                }
+            };
+
+            cbOrigen.setConverter(converter);
+            cbDestino.setConverter(converter);
+        } else {
+            // Si sale este mensaje, revisa los fx:id en Scene Builder
+            System.err.println("¡ALERTA! cbOrigen o cbDestino son NULL. Revisa fx:id en Scene Builder.");
+        }
+
+        // Centrar mapa
         javafx.application.Platform.runLater(() -> {
             scrollMapa.setHvalue(0.5);
             scrollMapa.setVvalue(0.5);
         });
 
+        // Esconder panel de edición
         panelEdicion.setTranslateX(4000);
     }
 
@@ -857,6 +897,10 @@ public class PruebaController {
         DatosRedJSON datosActualizados = new DatosRedJSON(mapaParadas, todasLasRutas);
         gestorDatos.guardarDatos(datosActualizados, RUTA_ARCHIVO);
 
+        ObservableList<Parada> paradasVivas = FXCollections.observableArrayList(mapaParadas.values());
+        cbOrigen.setItems(paradasVivas);
+        cbDestino.setItems(paradasVivas);
+
         // Refrescar la vista
         refrescarMapaVisual();
         if (!contenedorLateral.getChildren().isEmpty()) {
@@ -970,5 +1014,114 @@ public class PruebaController {
         panelEdicion.setVisible(true);
         contenedorLateral.getChildren().setAll(panelEdicion);
         animarEntradaPanel(panelEdicion, true);
+    }
+
+    // ==========================================
+    //        GESTIÓN Y CALCULO DE MEJOR RUTA
+    // ==========================================
+
+    private void mostrarTarjetaResultado(List<Ruta> camino, Parada pOrigen) {
+        if (camino == null || camino.isEmpty()) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
+            AnchorPane tarjeta = loader.load();
+
+            // Usamos el origen que pasamos por parámetro y el destino de la última ruta
+            Parada destino = camino.get(camino.size() - 1).getDestino();
+
+            double costoTotal = 0;
+            double kmTotales = 0;
+            double tiempoTotal = 0;
+
+            for (Ruta r : camino) {
+                costoTotal += r.getPond(Pond.COSTO);
+                kmTotales += r.getPond(Pond.DISTANCIA);
+                tiempoTotal += r.getPond(Pond.TIEMPO);
+            }
+
+            // Llenado de labels (asegúrate que los IDs coincidan con el FXML anterior)
+            Parada origen;
+            ((Label) tarjeta.lookup("#lblOrigenNombre")).setText(pOrigen.getNombre());
+            ((Label) tarjeta.lookup("#lblDestinoNombre")).setText(destino.getNombre());
+            ((Label) tarjeta.lookup("#lblCostoTotal")).setText(String.format("%.0f $ DOP", costoTotal));
+            ((Label) tarjeta.lookup("#lblDistanciaTotal")).setText(String.format("%.1f Km", kmTotales));
+            ((Label) tarjeta.lookup("#lblTiempoTotal")).setText(String.format("%.0f min", tiempoTotal));
+            ((Label) tarjeta.lookup("#lblTransbordosCount")).setText((camino.size() - 1) + " Transbordos");
+
+            // Posicionamiento de la tarjeta
+            tarjeta.setLayoutX((panelGrafo.getWidth() - 400) / 2);
+            tarjeta.setLayoutY(panelGrafo.getHeight() - 230);
+
+            // Limpiar tarjeta anterior si existe antes de poner la nueva
+            panelGrafo.getChildren().removeIf(n -> n.lookup("#lblOrigenNombre") != null);
+            panelGrafo.getChildren().add(tarjeta);
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar la tarjeta: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    void onBtnBuscarClicked(ActionEvent event) {
+        Parada pOrigen = cbOrigen.getValue(); // El ComboBox de origen de tu imagen
+        Parada pDestino = cbDestino.getValue();
+
+        if (pOrigen == null || pDestino == null) return;
+
+        // Tu lógica de búsqueda ya existente
+        Pond criterio = obtenerCriterioSeleccionado();
+        List<Ruta> resultado = dijkstra.buscarRutaOptima(grafo, pOrigen, pDestino, criterio);
+
+        if (!resultado.isEmpty()) {
+            mostrarTarjetaResultado(resultado, pOrigen);
+            resaltarRutaEnMapa(resultado);
+        }
+    }
+
+
+    private Parada buscarParadaOrigen(Ruta primeraRuta, Parada pOrigenSeleccionado) {
+        // Opción A: Si el usuario ya seleccionó el origen en el ComboBox,
+        // ese ES el origen, no hay que buscarlo.
+        if (pOrigenSeleccionado != null) return pOrigenSeleccionado;
+
+        // Opción B (Seguridad): Buscar en el grafo quién tiene esa ruta
+        // (Solo si pOrigenSeleccionado fuera null por alguna razón)
+        return null;
+    }
+
+    private Pond obtenerCriterioSeleccionado() {
+        if (rbTiempo.isSelected()) return Pond.TIEMPO;
+        if (rbDistancia.isSelected()) return Pond.DISTANCIA;
+        if (rbCosto.isSelected()) return Pond.COSTO;
+        if (rbTransbordos.isSelected()) return Pond.TRANSBORDOS;
+        return Pond.DISTANCIA; // Por defecto
+    }
+
+    private void resaltarRutaEnMapa(List<Ruta> camino) {
+        // 1. Limpiar resaltados previos (volver todas las líneas a gris/negro)
+        panelGrafo.getChildren().forEach(nodo -> {
+            if (nodo instanceof Line) {
+                ((Line) nodo).setStroke(Color.BLACK);
+                ((Line) nodo).setStrokeWidth(1.0);
+            }
+        });
+
+        // 2. Resaltar las rutas del camino óptimo
+        for (Ruta r : camino) {
+            // Aquí deberías tener una forma de identificar la Line física
+            // asociada a la ruta 'r' para ponerla en color azul o verde.
+            // Ejemplo:
+            // Line visual = buscarLineaDeRuta(r);
+            // visual.setStroke(Color.CYAN);
+            // visual.setStrokeWidth(3.0);
+        }
+    }
+
+    @FXML
+    private void intercambiarSeleccion() {
+        Parada temp = cbOrigen.getValue();
+        cbOrigen.setValue(cbDestino.getValue());
+        cbDestino.setValue(temp);
     }
 }
