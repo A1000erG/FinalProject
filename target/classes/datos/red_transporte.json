@@ -1,10 +1,28 @@
 {
   "paradas" : {
-    "P-006" : {
-      "id" : "P-006",
-      "nombre" : "P",
-      "coordX" : 230.0,
-      "coordY" : 90.0
+    "P12" : {
+      "id" : "P12",
+      "nombre" : "KOBKH",
+      "coordX" : 1124.0,
+      "coordY" : 430.6666666666667
+    },
+    "P11" : {
+      "id" : "P11",
+      "nombre" : "Parada E",
+      "coordX" : 1194.6666666666667,
+      "coordY" : 552.0
+    },
+    "P14" : {
+      "id" : "P14",
+      "nombre" : "Parada Prueba0.2",
+      "coordX" : 343.33333333333337,
+      "coordY" : 807.3333333333334
+    },
+    "P13" : {
+      "id" : "P13",
+      "nombre" : "Parada X",
+      "coordX" : 396.0,
+      "coordY" : 566.6666666666667
     },
     "P7" : {
       "id" : "P7",
@@ -29,103 +47,71 @@
       "nombre" : "Parada D",
       "coordX" : 978.6666666666666,
       "coordY" : 626.0
-    },
-    "P12" : {
-      "id" : "P12",
-      "nombre" : "KOBKH",
-      "coordX" : 1124.0,
-      "coordY" : 430.6666666666667
-    },
-    "P11" : {
-      "id" : "P11",
-      "nombre" : "Parada E",
-      "coordX" : 1194.6666666666667,
-      "coordY" : 552.0
-    },
-    "P14" : {
-      "id" : "P14",
-      "nombre" : "Parada Prueba0.2",
-      "coordX" : 343.33333333333337,
-      "coordY" : 807.3333333333334
-    },
-    "P13" : {
-      "id" : "P13",
-      "nombre" : "Parada X",
-      "coordX" : 396.0,
-      "coordY" : 566.6666666666667
     }
   },
   "rutas" : [ {
-    "idOrigen" : "P9",
-    "idDestino" : "P8",
-    "pesos" : {
-      "DISTANCIA" : 20.37651153220841,
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
-    }
-  }, {
-    "idOrigen" : "P12",
-    "idDestino" : "P-006",
-    "pesos" : {
-      "DISTANCIA" : 47.835389038288845,
-      "COSTO" : 5.0,
-      "TIEMPO" : 10.0
-    }
-  }, {
     "idOrigen" : "P11",
     "idDestino" : "P8",
     "pesos" : {
-      "DISTANCIA" : 15.601780525169412,
+      "TIEMPO" : 10.0,
       "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "DISTANCIA" : 15.601780525169412
     }
   }, {
     "idOrigen" : "P14",
     "idDestino" : "P7",
     "pesos" : {
-      "DISTANCIA" : 25.542665831462813,
+      "TIEMPO" : 25.0,
       "COSTO" : 200.0,
-      "TIEMPO" : 25.0
+      "DISTANCIA" : 25.542665831462813
     }
   }, {
     "idOrigen" : "P14",
     "idDestino" : "P13",
     "pesos" : {
-      "DISTANCIA" : 12.318098698888377,
+      "TIEMPO" : 15.0,
       "COSTO" : 150.0,
-      "TIEMPO" : 15.0
+      "DISTANCIA" : 12.318098698888377
     }
   }, {
     "idOrigen" : "P14",
     "idDestino" : "P8",
     "pesos" : {
-      "DISTANCIA" : 30.54766766874355,
+      "TIEMPO" : 20.3,
       "COSTO" : 180.0,
-      "TIEMPO" : 20.3
+      "DISTANCIA" : 30.54766766874355
     }
   }, {
     "idOrigen" : "P13",
     "idDestino" : "P11",
     "pesos" : {
-      "DISTANCIA" : 39.94006621037188,
+      "TIEMPO" : 10.0,
       "COSTO" : 5.0,
-      "TIEMPO" : 10.0
+      "DISTANCIA" : 39.94006621037188
     }
   }, {
     "idOrigen" : "P13",
     "idDestino" : "P7",
     "pesos" : {
-      "DISTANCIA" : 21.434992159758043,
+      "TIEMPO" : 20.0,
       "COSTO" : 150.0,
-      "TIEMPO" : 20.0
+      "DISTANCIA" : 21.434992159758043
     }
   }, {
     "idOrigen" : "P13",
     "idDestino" : "P9",
     "pesos" : {
-      "DISTANCIA" : 11.194641575325225,
+      "TIEMPO" : 15.0,
       "COSTO" : 100.0,
-      "TIEMPO" : 15.0
+      "DISTANCIA" : 11.194641575325225
+    }
+  }, {
+    "idOrigen" : "P9",
+    "idDestino" : "P8",
+    "pesos" : {
+      "TIEMPO" : 10.0,
+      "COSTO" : 5.0,
+      "DISTANCIA" : 20.37651153220841
     }
   } ]
 }

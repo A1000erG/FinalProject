@@ -1021,7 +1021,10 @@ public class PruebaController {
     // ==========================================
 
     private void mostrarTarjetaResultado(List<Ruta> camino, Parada pOrigen) {
-        if (camino == null || camino.isEmpty()) return;
+        if (camino == null || camino.isEmpty()){
+            System.out.println("DEBUG: El camino está vacío.");
+            return;
+        }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
@@ -1050,12 +1053,13 @@ public class PruebaController {
             ((Label) tarjeta.lookup("#lblTransbordosCount")).setText((camino.size() - 1) + " Transbordos");
 
             // Posicionamiento de la tarjeta
-            tarjeta.setLayoutX((panelGrafo.getWidth() - 400) / 2);
-            tarjeta.setLayoutY(panelGrafo.getHeight() - 230);
+            tarjeta.setLayoutX(50);
+            tarjeta.setLayoutY(50);
 
             // Limpiar tarjeta anterior si existe antes de poner la nueva
             panelGrafo.getChildren().removeIf(n -> n.lookup("#lblOrigenNombre") != null);
             panelGrafo.getChildren().add(tarjeta);
+            tarjeta.toFront();
 
         } catch (IOException e) {
             System.err.println("Error al cargar la tarjeta: " + e.getMessage());
