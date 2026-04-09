@@ -12,4 +12,6 @@ module FinalProject {
     exports VisualPack;
     exports LogicPack;
     exports PersistancePack;
+    exports LogicPack.Herramientas;
+    opens LogicPack.Herramientas to com.fasterxml.jackson.databind;
 }

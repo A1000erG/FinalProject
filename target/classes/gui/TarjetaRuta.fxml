@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.effect.DropShadow?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="220.0" prefWidth="450.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="contenedorPrincipal" prefHeight="220.0" prefWidth="450.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VisualPack.TarjetaRutaController">
     <children>
         <VBox alignment="TOP_CENTER" layoutX="25.0" layoutY="25.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 30;">
             <effect>
@@ -31,23 +32,23 @@
                     </padding>
                     <children>
 
-                        <HBox alignment="CENTER" minWidth="80.0" spacing="5.0">
+                        <HBox alignment="CENTER" minWidth="72.0" prefHeight="120.0" prefWidth="90.0" spacing="5.0">
                             <children>
                                 <Label rotate="180" text="◀" textFill="#e68484">
                                     <font><Font size="14.0" /></font>
                                 </Label>
-                                <Label fx:id="lblTiempoTotal" text="-- min" textFill="#333333">
+                                <Label fx:id="lblTiempo" prefHeight="21.0" prefWidth="59.0" text="-- min" textFill="#333333">
                                     <font><Font name="System Bold" size="15.0" /></font>
                                 </Label>
                             </children>
                         </HBox>
 
-                        <VBox alignment="CENTER" prefWidth="160.0" spacing="2.0">
+                        <VBox alignment="CENTER" prefHeight="120.0" prefWidth="141.0" spacing="2.0">
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Circle fill="WHITE" radius="6.0" stroke="BLACK" strokeWidth="2.0" />
-                                        <Label fx:id="lblOrigenNombre" maxWidth="130.0" prefWidth="62.0" text="Origen..." textFill="#555555" textOverrun="ELLIPSIS">
+                                        <Label fx:id="lblOrigen" maxWidth="130.0" prefHeight="20.0" prefWidth="124.0" text="Origen..." textFill="#555555" textOverrun="ELLIPSIS">
                                             <font><Font name="System Semibold" size="14.0" /></font>
                                         </Label>
                                     </children>
@@ -63,7 +64,7 @@
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Circle fill="WHITE" radius="6.0" stroke="BLACK" strokeWidth="2.0" />
-                                        <Label fx:id="lblDestinoNombre" maxWidth="130.0" text="Destino..." textFill="#555555" textOverrun="ELLIPSIS">
+                                        <Label fx:id="lblDestino" maxWidth="130.0" prefHeight="20.0" prefWidth="128.0" text="Destino..." textFill="#555555" textOverrun="ELLIPSIS">
                                             <font><Font name="System Semibold" size="14.0" /></font>
                                         </Label>
                                     </children>
@@ -73,11 +74,12 @@
 
                         <StackPane maxHeight="85.0" maxWidth="85.0" minHeight="85.0" minWidth="85.0" style="-fx-background-color: #E68484; -fx-background-radius: 50;">
                             <children>
-                                <Label fx:id="lblCostoTotal" alignment="CENTER" prefWidth="70.0" text="0 $ DOP" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                <Label fx:id="lblCosto" alignment="CENTER" prefWidth="70.0" text="0 $ DOP" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                     <font><Font name="System Bold" size="14.0" /></font>
                                 </Label>
                             </children>
                         </StackPane>
+                  <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#onCerrarClicked" prefHeight="25.0" prefWidth="43.0" style="-fx-background-color: #999999; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand;" text="✕" />
                     </children>
                 </HBox>
 
@@ -94,7 +96,7 @@
                                         </Label>
                                     </children>
                                 </StackPane>
-                                <Label fx:id="lblDistanciaTotal" text="0.0 Km" textFill="#666666">
+                                <Label fx:id="lblDistancia" text="0.0 Km" textFill="#666666">
                                     <font><Font size="14.0" /></font>
                                 </Label>
                             </children>
@@ -102,7 +104,7 @@
 
                         <Separator orientation="VERTICAL" prefHeight="25.0" />
 
-                        <Label fx:id="lblTransbordosCount" text="0 Transbordos" textFill="#666666">
+                        <Label fx:id="lblTransbordos" text="0 Transbordos" textFill="#666666">
                             <font><Font size="14.0" /></font>
                         </Label>
                     </children>

@@ -1,4 +1,6 @@
-package LogicPack;
+package LogicPack.Herramientas;
+
+import LogicPack.Parada;
 
 public class CalculadoraRutas {
 

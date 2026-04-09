@@ -1,8 +1,9 @@
 package VisualPack;
 
+import LogicPack.*;
 import LogicPack.Algorithms.DijkstraAlgo;
-import LogicPack.Pond;
-import LogicPack.Ruta;
+import LogicPack.Herramientas.ResultadoRuta;
+import LogicPack.Herramientas.RutaService;
 import PersistancePack.DatosRedJSON;
 import PersistancePack.RutaJSON;
 import javafx.collections.FXCollections;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -22,16 +24,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.animation.TranslateTransition;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.util.Duration;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import LogicPack.GrafoTransporte;
-import LogicPack.Parada;
 import PersistancePack.GestorDatosJSON;
 import javafx.util.StringConverter;
 
@@ -44,6 +46,7 @@ public class PruebaController {
     @FXML private AnchorPane panelEdicion;   // El menú lateral deslizable
     @FXML private TextField txtNombreParada; // Campo para el nombre de la parada
     @FXML private AnchorPane contenedorLateral; // El espacio físico en la derecha
+    @FXML private TarjetaRutaController tarjetaRutaController;
 
     // --- MOTOR LÓGICO Y PERSISTENCIA ---
     private GrafoTransporte grafo = new GrafoTransporte();
@@ -58,14 +61,16 @@ public class PruebaController {
     private double tempX = 0, tempY = 0;    // Coordenadas clicadas
     private Circle marcadorTemporal;        // El punto negro de previsualización
     private Line lineaPrevia;
-    private javafx.scene.shape.Polygon flechaPrevia;
+    private Polygon flechaPrevia;
+
+    private Map<Ruta, Group> mapaVisualRutas = new HashMap<>();
 
     // --- VARIABLES DE CALCULO DE MEJOR RUTA ---
     @FXML private ComboBox<Parada> cbOrigen;
     @FXML private ComboBox<Parada> cbDestino;
     @FXML private RadioButton rbTiempo, rbDistancia, rbCosto, rbTransbordos;
 
-    private DijkstraAlgo dijkstra = new DijkstraAlgo();
+    private RutaService rutaService;
 
 
     // ==========================================
@@ -94,9 +99,26 @@ public class PruebaController {
                 for (RutaJSON r : datosCargados.getRutas()) {
                     Parada origen = mapaParadas.get(r.getIdOrigen());
                     Parada destino = mapaParadas.get(r.getIdDestino());
+
                     if (origen != null && destino != null) {
                         grafo.conectar(origen, destino, r.getPesos());
-                        dibujarLineaRuta(origen, destino);
+
+                        List<Ruta> vecinos = grafo.obtenerVecinos(origen);
+                        Ruta rutaCreada = null;
+                        for (Ruta rt : vecinos) {
+                            if (rt.getDestino().equals(destino)) {
+                                rutaCreada = rt;
+                                break;
+                            }
+                        }
+
+                        // 3. USAR LA VERSIÓN DE 3 PARÁMETROS
+                        if (rutaCreada != null) {
+                            dibujarLineaRuta(origen, destino, rutaCreada);
+                        } else {
+                            // Por si acaso falla la búsqueda, al menos dibujamos la línea base
+                            dibujarLineaRuta(origen, destino);
+                        }
                     }
                 }
             }
@@ -128,6 +150,9 @@ public class PruebaController {
             // Si sale este mensaje, revisa los fx:id en Scene Builder
             System.err.println("¡ALERTA! cbOrigen o cbDestino son NULL. Revisa fx:id en Scene Builder.");
         }
+
+        this.rutaService = new RutaService(this.grafo);
+        rbCosto.setSelected(true);
 
         // Centrar mapa
         javafx.application.Platform.runLater(() -> {
@@ -649,11 +674,6 @@ public class PruebaController {
 
     private void dibujarLineaRuta(Parada origen, Parada destino) {
 
-        if (lineaPrevia != null) {
-            panelGrafo.getChildren().remove(lineaPrevia);
-            lineaPrevia = null;
-        }
-
         double x1 = origen.getCoordX();
         double y1 = origen.getCoordY();
         double x2 = destino.getCoordX();
@@ -669,13 +689,14 @@ public class PruebaController {
         linea.setStroke(javafx.scene.paint.Color.web("#4A4A4A"));
         linea.setStrokeWidth(2.5);
         linea.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.BUTT);
-        linea.setOpacity(1.0);
 
-        javafx.scene.shape.Polygon flecha = crearPuntaFlecha(x1, y1, x2, y2);
 
-        flecha.setOpacity(1.0);
-        linea.setViewOrder(1.0);
-        flecha.setViewOrder(1.0);
+        Polygon flecha = crearPuntaFlecha(x1, y1, x2, y2);
+        flecha.setFill(javafx.scene.paint.Color.web("#4A4A4A"));
+
+
+        linea.setViewOrder(-1.0);
+        flecha.setViewOrder(-1.0);
 
         panelGrafo.getChildren().addAll(linea, flecha);
     }
@@ -714,7 +735,7 @@ public class PruebaController {
     }
 
 
-    private javafx.scene.shape.Polygon crearPuntaFlecha(double x1, double y1, double x2, double y2) {
+    private Polygon crearPuntaFlecha(double x1, double y1, double x2, double y2) {
         double radioFlecha = 15.0; // Tamaño de la flecha
 
         // Calcular el ángulo de la línea
@@ -1020,106 +1041,12 @@ public class PruebaController {
     //        GESTIÓN Y CALCULO DE MEJOR RUTA
     // ==========================================
 
-    private void mostrarTarjetaResultado(List<Ruta> camino, Parada pOrigen) {
-        if (camino == null || camino.isEmpty()){
-            System.out.println("DEBUG: El camino está vacío.");
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
-            AnchorPane tarjeta = loader.load();
-
-            // Usamos el origen que pasamos por parámetro y el destino de la última ruta
-            Parada destino = camino.get(camino.size() - 1).getDestino();
-
-            double costoTotal = 0;
-            double kmTotales = 0;
-            double tiempoTotal = 0;
-
-            for (Ruta r : camino) {
-                costoTotal += r.getPond(Pond.COSTO);
-                kmTotales += r.getPond(Pond.DISTANCIA);
-                tiempoTotal += r.getPond(Pond.TIEMPO);
-            }
-
-            // Llenado de labels (asegúrate que los IDs coincidan con el FXML anterior)
-            Parada origen;
-            ((Label) tarjeta.lookup("#lblOrigenNombre")).setText(pOrigen.getNombre());
-            ((Label) tarjeta.lookup("#lblDestinoNombre")).setText(destino.getNombre());
-            ((Label) tarjeta.lookup("#lblCostoTotal")).setText(String.format("%.0f $ DOP", costoTotal));
-            ((Label) tarjeta.lookup("#lblDistanciaTotal")).setText(String.format("%.1f Km", kmTotales));
-            ((Label) tarjeta.lookup("#lblTiempoTotal")).setText(String.format("%.0f min", tiempoTotal));
-            ((Label) tarjeta.lookup("#lblTransbordosCount")).setText((camino.size() - 1) + " Transbordos");
-
-            // Posicionamiento de la tarjeta
-            tarjeta.setLayoutX(50);
-            tarjeta.setLayoutY(50);
-
-            // Limpiar tarjeta anterior si existe antes de poner la nueva
-            panelGrafo.getChildren().removeIf(n -> n.lookup("#lblOrigenNombre") != null);
-            panelGrafo.getChildren().add(tarjeta);
-            tarjeta.toFront();
-
-        } catch (IOException e) {
-            System.err.println("Error al cargar la tarjeta: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    void onBtnBuscarClicked(ActionEvent event) {
-        Parada pOrigen = cbOrigen.getValue(); // El ComboBox de origen de tu imagen
-        Parada pDestino = cbDestino.getValue();
-
-        if (pOrigen == null || pDestino == null) return;
-
-        // Tu lógica de búsqueda ya existente
-        Pond criterio = obtenerCriterioSeleccionado();
-        List<Ruta> resultado = dijkstra.buscarRutaOptima(grafo, pOrigen, pDestino, criterio);
-
-        if (!resultado.isEmpty()) {
-            mostrarTarjetaResultado(resultado, pOrigen);
-            resaltarRutaEnMapa(resultado);
-        }
-    }
-
-
-    private Parada buscarParadaOrigen(Ruta primeraRuta, Parada pOrigenSeleccionado) {
-        // Opción A: Si el usuario ya seleccionó el origen en el ComboBox,
-        // ese ES el origen, no hay que buscarlo.
-        if (pOrigenSeleccionado != null) return pOrigenSeleccionado;
-
-        // Opción B (Seguridad): Buscar en el grafo quién tiene esa ruta
-        // (Solo si pOrigenSeleccionado fuera null por alguna razón)
-        return null;
-    }
-
     private Pond obtenerCriterioSeleccionado() {
         if (rbTiempo.isSelected()) return Pond.TIEMPO;
         if (rbDistancia.isSelected()) return Pond.DISTANCIA;
         if (rbCosto.isSelected()) return Pond.COSTO;
         if (rbTransbordos.isSelected()) return Pond.TRANSBORDOS;
-        return Pond.DISTANCIA; // Por defecto
-    }
-
-    private void resaltarRutaEnMapa(List<Ruta> camino) {
-        // 1. Limpiar resaltados previos (volver todas las líneas a gris/negro)
-        panelGrafo.getChildren().forEach(nodo -> {
-            if (nodo instanceof Line) {
-                ((Line) nodo).setStroke(Color.BLACK);
-                ((Line) nodo).setStrokeWidth(1.0);
-            }
-        });
-
-        // 2. Resaltar las rutas del camino óptimo
-        for (Ruta r : camino) {
-            // Aquí deberías tener una forma de identificar la Line física
-            // asociada a la ruta 'r' para ponerla en color azul o verde.
-            // Ejemplo:
-            // Line visual = buscarLineaDeRuta(r);
-            // visual.setStroke(Color.CYAN);
-            // visual.setStrokeWidth(3.0);
-        }
+        return Pond.TIEMPO; // Por defecto
     }
 
     @FXML
@@ -1127,5 +1054,131 @@ public class PruebaController {
         Parada temp = cbOrigen.getValue();
         cbOrigen.setValue(cbDestino.getValue());
         cbDestino.setValue(temp);
+    }
+
+
+    // ==========================================
+    //              DIBUJAR LA RUTA
+    // ==========================================
+
+    private void dibujarLineaRuta(Parada origen, Parada destino, Ruta ruta) {
+        dibujarLineaRuta(origen, destino);
+
+
+        int size = panelGrafo.getChildren().size();
+        if (size >= 2) {
+            Node flecha = panelGrafo.getChildren().get(size - 1);
+            Node linea = panelGrafo.getChildren().get(size - 2);
+
+            // 3. Los empaquetamos en un Grupo para el buscador
+            // Primero los quitamos del panel para meterlos al grupo
+            panelGrafo.getChildren().removeAll(linea, flecha);
+
+            Group conjunto = new Group(linea, flecha);
+            conjunto.setViewOrder(-1.0);
+
+            // 4. Lo guardamos en el mapa "traductor"
+            mapaVisualRutas.put(ruta, conjunto);
+
+            // 5. Lo devolvemos al panel, pero ahora como un solo paquete
+            panelGrafo.getChildren().add(conjunto);
+        }
+    }
+
+    private void resaltarRutaEnMapa(List<Ruta> camino) {
+        // 1. Limpiar: Todo a gris
+        for (Group g : mapaVisualRutas.values()) {
+            ((Line) g.getChildren().get(0)).setStroke(Color.web("#4A4A4A"));
+            ((Line) g.getChildren().get(0)).setStrokeWidth(2.5);
+            ((Polygon) g.getChildren().get(1)).setFill(Color.web("#4A4A4A"));
+        }
+
+        // 2. Resaltar: El camino encontrado a Azul
+        if (camino != null) {
+            for (Ruta r : camino) {
+                Group g = mapaVisualRutas.get(r);
+                if (g != null) {
+                    Line l = (Line) g.getChildren().get(0);
+                    Polygon f = (Polygon) g.getChildren().get(1);
+
+                    l.setStroke(Color.web("#0078D7")); // Azul
+                    l.setStrokeWidth(5.0);
+                    f.setFill(Color.web("#0078D7"));
+                    g.toFront();
+                }
+            }
+        }
+    }
+
+    // ==========================================
+    //                  BOTONES
+    // ==========================================
+
+    @FXML
+    void onBtnBuscarClicked(ActionEvent event) {
+        Parada origen = cbOrigen.getValue();
+        Parada destino = cbDestino.getValue();
+
+        if (origen == null || destino == null) {
+            System.out.println("Debes seleccionar origen y destino");
+            return;
+        }
+
+        // 1. Pedir la ruta al Servicio
+        Pond criterio = obtenerCriterioSeleccionado();
+        ResultadoRuta resultado = rutaService.obtenerRuta(origen, destino, criterio);
+
+        if (resultado != null && resultado.existeRuta()) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
+                AnchorPane nodoTarjeta = loader.load();
+
+
+                this.tarjetaRutaController = loader.getController();
+                this.tarjetaRutaController.configurarDatos(resultado, origen.getNombre(), destino.getNombre());
+
+
+                panelEdicion.getChildren().clear();
+                panelEdicion.getChildren().add(nodoTarjeta);
+
+                // 5. EFECTOS VISUALES
+                resaltarRutaEnMapa(resultado.getRutas()); // Pintamos el mapa de azul
+                panelEdicion.setTranslateX(0);            // Movemos el panel a la vista
+                panelEdicion.setVisible(true);
+
+            } catch (IOException e) {
+                System.err.println("Error crítico: No se pudo cargar la TarjetaRuta.fxml");
+                e.printStackTrace();
+            }
+
+        } else {
+            System.out.println("No se encontró una ruta válida.");
+        }
+    }
+
+    @FXML
+    void onBtnBorrarClicked(ActionEvent event) {
+        limpiarResaltadoRuta();
+
+        cbOrigen.getSelectionModel().clearSelection();
+        cbDestino.getSelectionModel().clearSelection();
+
+    }
+
+    private void limpiarResaltadoRuta() {
+        // Recorremos todos los grupos (línea + flecha) que guardamos en el initialize
+        for (Group grupo : mapaVisualRutas.values()) {
+            // El primer hijo es la Línea, el segundo es la Flecha (Polygon)
+            Line linea = (Line) grupo.getChildren().get(0);
+            Polygon flecha = (Polygon) grupo.getChildren().get(1);
+
+            // Volvemos al estilo original
+            linea.setStroke(Color.web("#4A4A4A"));
+            linea.setStrokeWidth(2.5);
+            flecha.setFill(Color.web("#4A4A4A"));
+
+            // Opcional: bajar la opacidad si quieres que se vea más tenue
+            grupo.setOpacity(1.0);
+        }
     }
 }

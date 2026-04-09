@@ -110,28 +110,34 @@
                   BOTONES
 ==========================================*/
 
-.boton-buscar {
-    -fx-background-color: -color-negro-boton;
+.boton-transporte {
     -fx-text-fill: white;
-    -fx-font-size: 16px;
+    -fx-font-size: 14px; /* Bajamos a 14px para evitar que se corte el texto */
     -fx-font-weight: bold;
     -fx-background-radius: 25;
-    -fx-padding: 10 30 10 30;
+    -fx-padding: 8 20 8 20; /* Padding más equilibrado */
     -fx-cursor: hand;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
 }
 
-/* Efecto visual al pasar el cursor (Hover) */
-.boton-buscar:hover {
-    -fx-background-color: #333333;
-}
-
-/* Efecto visual al presionar el botón */
-.boton-buscar:pressed {
-    -fx-background-color: black;
+/* Efecto general al presionar */
+.boton-transporte:pressed {
     -fx-translate-y: 2;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
+
+/*==========================================
+          MODIFICADORES DE COLOR
+==========================================*/
+
+.btn-negro {-fx-background-color: #1A1A1A;}
+.btn-negro:hover { -fx-background-color: #333333; }
+
+.btn-salmon {-fx-background-color: #E57373;}
+.btn-salmon:hover { -fx-background-color: #EF9A9A; }
+
+.btn-gris {-fx-background-color: #BDBDBD;}
+.btn-gris:hover { -fx-background-color: #D1D1D1; }
 
 .boton-swap {
     -fx-background-color: -color-primario;
