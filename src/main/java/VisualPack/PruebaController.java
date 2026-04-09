@@ -1127,35 +1127,32 @@ public class PruebaController {
         Pond criterio = obtenerCriterioSeleccionado();
         ResultadoRuta resultado = rutaService.obtenerRuta(origen, destino, criterio);
 
-        if (resultado != null && resultado.existeRuta()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
-                AnchorPane nodoTarjeta = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
+            AnchorPane nodoTarjeta = loader.load();
+            this.tarjetaRutaController = loader.getController();
 
+            this.tarjetaRutaController.configurarDatos(resultado, origen.getNombre(), destino.getNombre());
 
-
-                this.tarjetaRutaController = loader.getController();
-                this.tarjetaRutaController.configurarDatos(resultado, origen.getNombre(), destino.getNombre());
-
-                panelEdicion.getChildren().clear();
-                panelEdicion.setStyle("-fx-background-color: transparent;");
-                panelEdicion.setPickOnBounds(false);
-
-                panelEdicion.getChildren().add(nodoTarjeta);
-
-                // 5. EFECTOS VISUALES
-                resaltarRutaEnMapa(resultado.getRutas()); // Pintamos el mapa de azul
-                panelEdicion.setTranslateX(0);            // Movemos el panel a la vista
-                panelEdicion.setVisible(true);
-                panelEdicion.toFront();
-
-            } catch (IOException e) {
-                System.err.println("Error crítico: No se pudo cargar la TarjetaRuta.fxml");
-                e.printStackTrace();
+            if (resultado != null && resultado.existeRuta()) {
+                resaltarRutaEnMapa(resultado.getRutas());
+            } else {
+                System.out.println("No se encontró ruta, pero se mostrará la tarjeta con N/A.");
+                limpiarResaltadoRuta();
             }
+            panelEdicion.getChildren().clear();
+            panelEdicion.setStyle("-fx-background-color: transparent;");
+            panelEdicion.getChildren().add(nodoTarjeta);
 
-        } else {
-            System.out.println("No se encontró una ruta válida.");
+            // 5. EFECTOS VISUALES
+            resaltarRutaEnMapa(resultado.getRutas()); // Pintamos el mapa de azul
+            panelEdicion.setTranslateX(0);            // Movemos el panel a la vista
+            panelEdicion.setVisible(true);
+            panelEdicion.toFront();
+
+        } catch (IOException e) {
+            System.err.println("Error crítico: No se pudo cargar la TarjetaRuta.fxml");
+            e.printStackTrace();
         }
     }
 

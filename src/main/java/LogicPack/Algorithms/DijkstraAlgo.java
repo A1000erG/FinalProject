@@ -44,6 +44,11 @@ public class DijkstraAlgo implements Algozed<Parada,Ruta> {
                 Double pesoRuta = ruta.getPond(criterio);
 
                 // Validación de pesos negativos (Dijkstra no los soporta)
+                if (pesoRuta == null) {
+                    System.err.println("Advertencia: La ruta hacia " + ruta.getDestino().getNombre() + " no tiene definido el criterio " + criterio);
+                    continue;
+                }
+
                 if (pesoRuta < 0) {
                     throw new IllegalArgumentException("Dijkstra no admite pesos negativos. Use Bellman-Ford.");
                 }

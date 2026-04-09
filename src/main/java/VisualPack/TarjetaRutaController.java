@@ -60,7 +60,7 @@ public class TarjetaRutaController {
     }
 
     private void mostrarSinRuta() {
-        lblOrigen.setText("No disponible");
+        lblOrigen.setText("Sin ruta disponible");
         lblDestino.setText("---");
         lblDistancia.setText("N/A");
         lblTiempo.setText("N/A");
