@@ -129,7 +129,7 @@
                               <String fx:value="btn-negro" />
                            </styleClass>
                         </Button>
-                        <Button fx:id="btnAlternativa" mnemonicParsing="false" onAction="#onBtnBuscarClicked" prefHeight="45.0" prefWidth="140.0" text="Alterna">
+                        <Button fx:id="btnAlternativa" mnemonicParsing="false" onAction="#onBtnAlternaClicked" prefHeight="45.0" prefWidth="140.0" text="Alterna">
                            <styleClass>
                               <String fx:value="boton-transporte" />
                               <String fx:value="btn-salmon" />

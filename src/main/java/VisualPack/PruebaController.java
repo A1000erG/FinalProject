@@ -1115,45 +1115,27 @@ public class PruebaController {
 
     @FXML
     void onBtnBuscarClicked(ActionEvent event) {
+        Pond criterio = obtenerCriterioSeleccionado();
+        ResultadoRuta res = rutaService.obtenerRuta(cbOrigen.getValue(), cbDestino.getValue(), criterio);
+        mostrarResultadoEnInterfaz(res, cbOrigen.getValue().getNombre(), cbDestino.getValue().getNombre());
+    }
+
+    @FXML
+    void onBtnAlternaClicked(ActionEvent event) {
         Parada origen = cbOrigen.getValue();
         Parada destino = cbDestino.getValue();
 
         if (origen == null || destino == null) {
-            System.out.println("Debes seleccionar origen y destino");
+            System.out.println("Selecciona origen y destino para buscar una alternativa.");
             return;
         }
 
-        // 1. Pedir la ruta al Servicio
-        Pond criterio = obtenerCriterioSeleccionado();
-        ResultadoRuta resultado = rutaService.obtenerRuta(origen, destino, criterio);
+        Pond criterioAlterno = (obtenerCriterioSeleccionado() == Pond.TIEMPO) ? Pond.TRANSBORDOS : Pond.TIEMPO;
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
-            AnchorPane nodoTarjeta = loader.load();
-            this.tarjetaRutaController = loader.getController();
+        ResultadoRuta resultado = rutaService.obtenerRuta(origen, destino, criterioAlterno);
 
-            this.tarjetaRutaController.configurarDatos(resultado, origen.getNombre(), destino.getNombre());
-
-            if (resultado != null && resultado.existeRuta()) {
-                resaltarRutaEnMapa(resultado.getRutas());
-            } else {
-                System.out.println("No se encontró ruta, pero se mostrará la tarjeta con N/A.");
-                limpiarResaltadoRuta();
-            }
-            panelEdicion.getChildren().clear();
-            panelEdicion.setStyle("-fx-background-color: transparent;");
-            panelEdicion.getChildren().add(nodoTarjeta);
-
-            // 5. EFECTOS VISUALES
-            resaltarRutaEnMapa(resultado.getRutas()); // Pintamos el mapa de azul
-            panelEdicion.setTranslateX(0);            // Movemos el panel a la vista
-            panelEdicion.setVisible(true);
-            panelEdicion.toFront();
-
-        } catch (IOException e) {
-            System.err.println("Error crítico: No se pudo cargar la TarjetaRuta.fxml");
-            e.printStackTrace();
-        }
+        // Llamamos a una función común para no repetir código de carga de tarjeta
+        mostrarResultadoEnInterfaz(resultado, origen.getNombre(), destino.getNombre());
     }
 
     @FXML
@@ -1179,6 +1161,34 @@ public class PruebaController {
 
             // Opcional: bajar la opacidad si quieres que se vea más tenue
             grupo.setOpacity(1.0);
+        }
+    }
+
+    private void mostrarResultadoEnInterfaz(ResultadoRuta resultado, String nombreOrigen, String nombreDestino) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/TarjetaRuta.fxml"));
+            AnchorPane nodoTarjeta = loader.load();
+
+            this.tarjetaRutaController = loader.getController();
+            this.tarjetaRutaController.configurarDatos(resultado, nombreOrigen, nombreDestino);
+
+            panelEdicion.getChildren().clear();
+            panelEdicion.setStyle("-fx-background-color: transparent;");
+            panelEdicion.getChildren().add(nodoTarjeta);
+
+            if (resultado != null && resultado.existeRuta()) {
+                resaltarRutaEnMapa(resultado.getRutas()); // Pinta de azul
+            } else {
+                limpiarResaltadoRuta();
+            }
+
+            panelEdicion.setVisible(true);
+            panelEdicion.toFront();
+
+            animarEntradaPanel(panelEdicion, true);
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar la interfaz de resultados: " + e.getMessage());
         }
     }
 }
