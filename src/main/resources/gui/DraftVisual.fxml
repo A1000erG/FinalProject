@@ -150,15 +150,15 @@
       <AnchorPane fx:id="contenedorLateral" layoutY="70.0" prefHeight="563.0" prefWidth="300.0" AnchorPane.bottomAnchor="157.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
       
-                        <AnchorPane fx:id="panelEdicion" prefHeight="491.0" prefWidth="251.0" style="-fx-background-color: #ffffffee; -fx-background-radius: 20 0 0 20;" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <AnchorPane fx:id="panelEdicion" prefHeight="491.0" prefWidth="450.0" style="-fx-background-color: transparent; -fx-background-radius: 20 0 0 20;" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Label prefHeight="39.0" prefWidth="251.0" style="-fx-background-color: eb8e83; -fx-text-fill: white; -fx-alignment: center; -fx-background-radius: 20 0 0 0;" text="NUEVA PARADA">
+                  <Label prefHeight="39.0" prefWidth="251.0" style="-fx-background-color: eb8e83; -fx-text-fill: white; -fx-alignment: center; -fx-background-radius: 20 0 0 0;" text="NUEVA PARADA" AnchorPane.rightAnchor="0.0">
                      <font>
                         <Font name="HelveticaLTStd-Blk" size="14.0" />
                      </font>
                   </Label>
       
-                              <VBox fx:id="vboxRutas" layoutY="38.0" prefHeight="463.0" prefWidth="251.0" spacing="12.0">
+                              <VBox fx:id="vboxRutas" layoutY="38.0" prefHeight="463.0" prefWidth="251.0" spacing="12.0" style="-fx-background-color: ffffffee;" AnchorPane.rightAnchor="0.0">
                      <padding>
                         <Insets left="15.0" right="15.0" top="10.0" />
                      </padding>

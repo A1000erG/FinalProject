@@ -29,7 +29,6 @@ import javafx.util.Duration;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -695,8 +694,8 @@ public class PruebaController {
         flecha.setFill(javafx.scene.paint.Color.web("#4A4A4A"));
 
 
-        linea.setViewOrder(-1.0);
-        flecha.setViewOrder(-1.0);
+        linea.setViewOrder(1.0);
+        flecha.setViewOrder(1.0);
 
         panelGrafo.getChildren().addAll(linea, flecha);
     }
@@ -1134,17 +1133,21 @@ public class PruebaController {
                 AnchorPane nodoTarjeta = loader.load();
 
 
+
                 this.tarjetaRutaController = loader.getController();
                 this.tarjetaRutaController.configurarDatos(resultado, origen.getNombre(), destino.getNombre());
 
-
                 panelEdicion.getChildren().clear();
+                panelEdicion.setStyle("-fx-background-color: transparent;");
+                panelEdicion.setPickOnBounds(false);
+
                 panelEdicion.getChildren().add(nodoTarjeta);
 
                 // 5. EFECTOS VISUALES
                 resaltarRutaEnMapa(resultado.getRutas()); // Pintamos el mapa de azul
                 panelEdicion.setTranslateX(0);            // Movemos el panel a la vista
                 panelEdicion.setVisible(true);
+                panelEdicion.toFront();
 
             } catch (IOException e) {
                 System.err.println("Error crítico: No se pudo cargar la TarjetaRuta.fxml");
